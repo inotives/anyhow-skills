@@ -1,0 +1,29 @@
+# Dependencies and TypeScript/Node build output
+node_modules/
+dist/
+build/
+coverage/
+*.tsbuildinfo
+
+# Local configuration and logs
+.env
+.env.*
+!.env.example
+*.log
+
+# Skill-local runtime data
+skills/*/.state/
+skills/*/*.sqlite
+skills/*/*.sqlite-wal
+skills/*/*.sqlite-shm
+skills/*/*.duckdb
+skills/*/*.duckdb.wal
+skills/*/*.duckdb.tmp
+
+# AgentRig local workspace and runtime state
+.agent-rig/
+
+# OS/editor files
+.DS_Store
+.idea/
+.vscode/

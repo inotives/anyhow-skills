@@ -19,7 +19,7 @@
   ·
   <a href="skills/">Skills</a>
   ·
-  <a href="docs/phase-1-repository-and-singapore-toto.md#agentrig-breakdown">AgentRig workflow</a>
+  <a href="AGENT.md">Agent instructions</a>
 </p>
 
 ---
@@ -68,42 +68,10 @@ It is not available in this checkout until Phase 1 implementation is complete.
 - Schemas and migrations belong in `schema/` and are versioned.
 - Small synthetic examples may live in `fixtures/`.
 - Downloaded data is disposable by default.
+- Agent workflow instructions live in [AGENT.md](AGENT.md).
 - Data-using skills must document sources, retrieval time, refresh commands,
   reset/rebuild behavior, privacy boundaries, and provenance.
 - A failed refresh must not destroy an existing local database.
-
-## AgentRig Workflow
-
-This repository uses AgentRig with planner, worker, and reviewer roles. The
-canonical planning documents live under `docs/`; live task and handoff state is
-stored in the local `.agent-rig/` SQLite workflow store.
-
-The engineering loop is:
-
-```text
-planner + human
-      ↓
-dependency-gated tasks
-      ↓
-worker implementation → worker handoff
-      ↓
-independent reviewer
-      ↓
-fix and re-review, if needed
-      ↓
-human end-to-end review
-```
-
-Use the local AgentRig CLI for task and handoff state changes:
-
-```sh
-node /Users/inotives/workspaces/agent-rig/dist/index.js validate
-node /Users/inotives/workspaces/agent-rig/dist/index.js status
-node /Users/inotives/workspaces/agent-rig/dist/index.js tasks --json
-```
-
-Do not commit `.agent-rig/`; it contains local workflow state, credentials,
-agent runs, and runtime artifacts.
 
 ## Development Principles
 

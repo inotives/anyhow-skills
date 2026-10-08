@@ -1,0 +1,23 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 320 320" role="img" aria-labelledby="title desc">
+  <title id="title">Anyhow Skills mark</title>
+  <desc id="desc">Three connected skill tiles surrounding a small agent spark.</desc>
+  <defs>
+    <linearGradient id="bg" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#141827"/>
+      <stop offset="1" stop-color="#252d48"/>
+    </linearGradient>
+    <linearGradient id="accent" x1="0" y1="0" x2="1" y2="1">
+      <stop offset="0" stop-color="#79e6d1"/>
+      <stop offset="1" stop-color="#8b7cff"/>
+    </linearGradient>
+  </defs>
+  <rect width="320" height="320" rx="72" fill="url(#bg)"/>
+  <path d="M160 160 84 91M160 160l76-69M160 160l76 78M160 160l-76 78" fill="none" stroke="#59627f" stroke-width="8" stroke-linecap="round"/>
+  <rect x="48" y="54" width="72" height="72" rx="18" fill="#f3f6ff"/>
+  <rect x="200" y="54" width="72" height="72" rx="18" fill="#f3f6ff"/>
+  <rect x="48" y="194" width="72" height="72" rx="18" fill="#f3f6ff"/>
+  <rect x="200" y="194" width="72" height="72" rx="18" fill="#f3f6ff"/>
+  <path d="M73 91h22M84 80v22M225 91h22M236 80v22M73 230h22M84 219v22M225 230h22M236 219v22" stroke="#252d48" stroke-width="8" stroke-linecap="round"/>
+  <circle cx="160" cy="160" r="43" fill="url(#accent)"/>
+  <path d="m160 126 9 25 25 9-25 9-9 25-9-25-25-9 25-9 9-25Z" fill="#fff"/>
+</svg>
