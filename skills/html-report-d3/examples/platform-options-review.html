@@ -1,0 +1,1066 @@
+<!doctype html>
+<html lang="en" data-palette="centience">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex, nofollow">
+<title>Data Platform Options Review</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,400;8..60,600;8..60,700&display=swap">
+<script>
+  /* set before first paint so the page never flashes the wrong appearance */
+  (function () { try { var t = localStorage.getItem('report-theme'); if (t === 'light' || t === 'dark') document.documentElement.setAttribute('data-theme', t); } catch (e) {} })();
+</script>
+<style>
+/* Report design system. Follows the Centience report outline. Colors are tokens. */
+:root, [data-palette="centience"] {
+  --ground:#FBFCFE; --surface:#FFFFFF; --surface-2:#F1F5FA; --line:#DCE5EF; --line-soft:#EBF1F7;
+  --ink:#23282E; --ink-2:#4E5A66; --ink-3:#7B8794;
+  --accent:#C85A1E; --accent-ink:#FFFFFF; --accent-soft:#FDEBDF;
+  --c1:#C4463A; --c2:#2489CC; --c3:#C8862A; --c4:#3F7D6A; --c5:#6B4FC4; --c6:#6E8CA8;
+  --good:#2C7D57; --warn:#C07A12; --risk:#C0442A; --good-bg:#DEF1E7; --warn-bg:#FCEEDA; --risk-bg:#FBE1DA;
+  --shadow:0 1px 2px rgba(16,26,28,.06), 0 6px 18px -10px rgba(16,26,28,.18);
+}
+[data-palette="teal"] {
+  --ground:#FBFCFC; --surface:#FFFFFF; --surface-2:#EFF4F4; --line:#D3DDDE; --line-soft:#E6EDED;
+  --ink:#0F1B1D; --ink-2:#3D4F52; --ink-3:#6A7C7F; --accent:#0E6E77; --accent-soft:#D9ECEE;
+  --c1:#0E6E77; --c2:#1D7FB8; --c3:#C8862A; --c4:#6B4FC4; --c5:#3E8E96; --c6:#A33B2E;
+}
+[data-palette="slate"] {
+  --ground:#FAFBFC; --surface:#FFFFFF; --surface-2:#EEF1F5; --line:#D6DCE4; --line-soft:#E7EBF0;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#7A8699; --accent:#334155; --accent-soft:#E2E8F0;
+  --c1:#334155; --c2:#3B82C4; --c3:#0E8A74; --c4:#7B5BD6; --c5:#C8862A; --c6:#A33B2E;
+}
+:root {
+  --radius:10px;
+  --font-display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+/* dark: auto from the system unless the reader chose light, or chose dark */
+@media (prefers-color-scheme: dark) { :root:not([data-theme="light"]) { color-scheme:dark; } }
+:root[data-theme="dark"] { color-scheme:dark; }
+@media (prefers-color-scheme: dark) {
+  :root:not([data-theme="light"]) {
+    --ground:#0C1416; --surface:#131E21; --surface-2:#1A272B; --line:#294044; --line-soft:#1F3034;
+    --ink:#E8F0F1; --ink-2:#AEC2C5; --ink-3:#7E9599; --accent:#4FBFC9; --accent-ink:#06181A; --accent-soft:#14343A;
+    --c1:#E8705F; --c2:#52A9DD; --c3:#E0A64C; --c4:#6FBFA6; --c5:#A18FE8; --c6:#A6B6BD;
+    --good:#5FC392; --warn:#D9AC55; --risk:#E58273; --good-bg:#123328; --warn-bg:#33270F; --risk-bg:#351915;
+    --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -12px rgba(0,0,0,.7);
+  }
+}
+:root[data-theme="dark"] {
+  --ground:#0C1416; --surface:#131E21; --surface-2:#1A272B; --line:#294044; --line-soft:#1F3034;
+  --ink:#E8F0F1; --ink-2:#AEC2C5; --ink-3:#7E9599; --accent:#4FBFC9; --accent-ink:#06181A; --accent-soft:#14343A;
+  --c1:#E8705F; --c2:#52A9DD; --c3:#E0A64C; --c4:#6FBFA6; --c5:#A18FE8; --c6:#A6B6BD;
+  --good:#5FC392; --warn:#D9AC55; --risk:#E58273; --good-bg:#123328; --warn-bg:#33270F; --risk-bg:#351915;
+  --shadow:0 1px 2px rgba(0,0,0,.4), 0 8px 22px -12px rgba(0,0,0,.7);
+}
+
+* { box-sizing:border-box; }
+body { margin:0; background:var(--ground); color:var(--ink); font-family:var(--font-body); font-size:15px; line-height:1.6; -webkit-font-smoothing:antialiased; }
+.wrap { max-width:1140px; margin:0 auto; padding-inline:20px; }
+
+/* ---------- masthead ---------- */
+.masthead { background:var(--surface); border-bottom:1px solid var(--line); position:relative; }
+.masthead .wrap { padding-block:30px 22px; position:relative; }
+.eyebrow { font-family:var(--font-mono); font-size:11px; letter-spacing:.13em; text-transform:uppercase; color:var(--accent); margin:0 0 10px; }
+h1 { font-family:var(--font-display); font-weight:700; font-size:clamp(28px,5vw,42px); line-height:1.12; letter-spacing:-.015em; margin:0 0 12px; text-wrap:balance; }
+.standfirst { font-family:var(--font-display); font-size:clamp(16px,2.2vw,19px); line-height:1.5; color:var(--ink-2); max-width:62ch; margin:0 0 20px; }
+.meta-row { display:flex; flex-wrap:wrap; gap:8px 10px; align-items:center; }
+.chip { font-family:var(--font-mono); font-size:11px; letter-spacing:.04em; padding:4px 9px; border-radius:999px; border:1px solid var(--line); color:var(--ink-3); background:var(--surface-2); white-space:nowrap; }
+.chip.draft, .chip.warn { color:var(--warn); background:var(--warn-bg); border-color:transparent; }
+.chip.good { color:var(--good); background:var(--good-bg); border-color:transparent; }
+.chip.risk { color:var(--risk); background:var(--risk-bg); border-color:transparent; }
+a { color:var(--accent); text-underline-offset:2px; }
+a:focus-visible, button:focus-visible { outline:2px solid var(--accent); outline-offset:2px; border-radius:3px; }
+a.chip { text-decoration:none; color:var(--accent); border-color:var(--accent); background:var(--accent-soft); }
+a.chip::after { content:" \2197"; font-size:10px; opacity:.8; }
+.theme-btn { position:absolute; top:18px; right:20px; display:inline-flex; align-items:center; gap:7px; cursor:pointer; font:500 11.5px var(--font-mono); color:var(--ink-2); background:var(--surface); border:1px solid var(--line); border-radius:999px; padding:6px 13px 6px 10px; }
+.theme-btn:hover { border-color:var(--accent); color:var(--ink); }
+.theme-btn .tdot { width:11px; height:11px; border-radius:50%; border:1px solid var(--ink-3); background:linear-gradient(135deg,#FFF 0 50%,#222 50% 100%); }
+:root[data-theme="light"] .theme-btn .tdot { background:#FFF; }
+:root[data-theme="dark"] .theme-btn .tdot { background:#222; }
+@media (max-width:720px) { .theme-btn { position:static; margin-bottom:14px; } }
+
+/* ---------- tabs ---------- */
+.tabbar { position:sticky; top:0; z-index:20; background:var(--surface); border-bottom:1px solid var(--line); }
+.tabs { display:flex; gap:2px; overflow-x:auto; scrollbar-width:thin; }
+.tab { appearance:none; border:0; background:transparent; font-family:var(--font-body); font-size:13.5px; font-weight:600; color:var(--ink-3); padding:13px 14px 11px; cursor:pointer; border-bottom:3px solid transparent; white-space:nowrap; display:inline-flex; align-items:center; gap:8px; }
+.tab:hover { color:var(--ink); }
+.tab[aria-selected="true"] { color:var(--ink); border-bottom-color:var(--dot,var(--accent)); }
+.tab .dot { width:8px; height:8px; border-radius:2px; background:var(--dot,var(--accent)); flex:none; }
+[role="tabpanel"][hidden] { display:none; }
+main .wrap { padding-block:32px 64px; }
+
+/* ---------- structure ---------- */
+section { margin-bottom:44px; }
+section:last-child { margin-bottom:0; }
+h2 { font-family:var(--font-display); font-size:clamp(21px,3vw,27px); font-weight:700; letter-spacing:-.01em; margin:0 0 6px; text-wrap:balance; }
+h3 { font-size:15px; font-weight:700; letter-spacing:.01em; margin:0 0 8px; }
+.section-note { color:var(--ink-3); font-size:14px; max-width:68ch; margin:0 0 18px; }
+p { margin:0 0 12px; max-width:72ch; }
+p:last-child { margin-bottom:0; }
+.stack > * + * { margin-top:16px; }
+.cols { display:grid; grid-template-columns:repeat(auto-fit,minmax(min(100%,var(--min,320px)),1fr)); gap:16px; align-items:start; }
+
+/* ---------- cards (board) ---------- */
+.board { display:grid; grid-template-columns:repeat(auto-fit,minmax(230px,1fr)); gap:14px; }
+.cand { background:var(--surface); border:1px solid var(--line); border-top:3px solid var(--dot,var(--accent)); border-radius:var(--radius); padding:16px 16px 14px; display:flex; flex-direction:column; gap:12px; }
+.cand-head { display:flex; flex-wrap:wrap; align-items:baseline; justify-content:space-between; gap:2px 10px; }
+.cand-name { font-weight:700; font-size:16px; letter-spacing:-.01em; }
+.rank { font-family:var(--font-mono); font-size:11px; color:var(--ink-3); letter-spacing:.06em; }
+.stat-list { display:grid; gap:7px; }
+.stat { display:grid; grid-template-columns:1fr auto; align-items:center; gap:4px 10px; font-size:13px; }
+.stat span:first-child { color:var(--ink-3); }
+.stat b { font-family:var(--font-mono); font-weight:600; font-variant-numeric:tabular-nums; font-size:13px; }
+.bar { grid-column:1 / -1; height:4px; border-radius:2px; background:var(--surface-2); overflow:hidden; }
+.bar i { display:block; height:100%; background:var(--dot,var(--accent)); border-radius:2px; }
+.cand-line { font-size:12.5px; color:var(--ink-2); border-top:1px solid var(--line-soft); padding-top:10px; line-height:1.45; margin:0; }
+.details-btn { appearance:none; font-family:var(--font-body); font-size:12.5px; font-weight:600; color:var(--ink-2); background:var(--surface-2); border:1px solid var(--line); border-radius:7px; padding:7px 11px; cursor:pointer; width:100%; }
+.details-btn:hover { background:var(--accent-soft); color:var(--ink); border-color:var(--accent); }
+
+/* ---------- kpis ---------- */
+.statgrid { display:grid; grid-template-columns:repeat(auto-fit,minmax(170px,1fr)); gap:12px; }
+.kpi { border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); padding:12px 14px; }
+.kpi .k { font-size:11.5px; color:var(--ink-3); letter-spacing:.02em; }
+.kpi .v { font-family:var(--font-mono); font-variant-numeric:tabular-nums; font-size:24px; font-weight:600; line-height:1.2; margin-top:2px; }
+.kpi .v.good { color:var(--good); } .kpi .v.warn { color:var(--warn); } .kpi .v.risk { color:var(--risk); }
+.kpi .sub { font-size:11.5px; color:var(--ink-3); margin-top:2px; }
+
+/* ---------- panels and charts ---------- */
+.panel { background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:16px; min-width:0; }
+.panel h3 { margin-bottom:2px; }
+.panel .hint { font-size:12.5px; color:var(--ink-3); margin:0 0 12px; }
+.chart svg { width:100%; height:auto; display:block; overflow:visible; }
+.chart text { font-family:var(--font-body); fill:var(--ink-2); font-size:12px; }
+.chart .axis line, .chart .axis path, .chart .grid line { stroke:var(--line); }
+.chart .grid line { stroke-dasharray:2 4; }
+.chart .axis text { fill:var(--ink-3); font-size:11px; }
+.chart .val { font-family:var(--font-mono); font-size:11.5px; fill:var(--ink); font-weight:600; }
+.chart .lbl { fill:var(--ink); }
+.chart .node rect { fill:var(--surface); stroke-width:2; }
+.chart .node .t1 { fill:var(--ink); font-weight:700; font-size:13px; }
+.chart .node .t2 { fill:var(--ink-3); font-size:11px; }
+.chart .edge { fill:none; stroke:var(--ink-3); stroke-width:1.6; opacity:.7; }
+.chart .dim { opacity:.15; }
+.chart svg { margin-top:8px; }
+.chart .gx { transform-box:fill-box; transform-origin:left center; animation:gx .7s ease-out; }
+.chart .fi { animation:fi .8s ease-out; }
+.chart .dl { stroke-dasharray:1; stroke-dashoffset:0; animation:dl 1s ease-out; }
+@keyframes gx { from { transform:scaleX(0); } }
+@keyframes fi { from { opacity:0; } }
+@keyframes dl { from { stroke-dashoffset:1; } }
+@media (prefers-reduced-motion:reduce) { .chart .gx, .chart .fi, .chart .dl { animation:none; } }
+.legend { display:flex; flex-wrap:wrap; gap:6px 14px; margin-top:10px; font-size:12.5px; color:var(--ink-3); }
+.legend i { display:inline-block; width:10px; height:10px; border-radius:2px; margin-right:6px; vertical-align:-1px; }
+.tip { position:fixed; z-index:50; pointer-events:none; background:var(--ink); color:var(--ground); font-size:12px; padding:5px 9px; border-radius:6px; opacity:0; transition:opacity .1s; max-width:240px; }
+
+/* ---------- tables ---------- */
+.scroller { overflow-x:auto; border:1px solid var(--line); border-radius:var(--radius); background:var(--surface); }
+table { border-collapse:collapse; width:100%; font-size:13.5px; min-width:520px; }
+caption { text-align:left; padding:12px 14px 0; color:var(--ink-3); font-size:12.5px; }
+th, td { text-align:left; padding:9px 12px; border-bottom:1px solid var(--line-soft); vertical-align:top; }
+thead th { font-family:var(--font-mono); font-size:10.5px; letter-spacing:.09em; text-transform:uppercase; color:var(--ink-3); font-weight:500; border-bottom:1px solid var(--line); background:var(--surface-2); }
+tbody tr:last-child td { border-bottom:0; }
+td.num, th.num { text-align:right; font-family:var(--font-mono); font-variant-numeric:tabular-nums; }
+td.score, th.score { text-align:center; font-family:var(--font-mono); font-weight:600; width:90px; }
+td.hi { color:var(--good); background:var(--good-bg); } td.mid { color:var(--warn); background:var(--warn-bg); } td.lo { color:var(--risk); background:var(--risk-bg); }
+.pill { display:inline-block; font-family:var(--font-mono); font-size:10.5px; letter-spacing:.05em; padding:2px 7px; border-radius:4px; white-space:nowrap; color:var(--ink-3); background:var(--surface-2); }
+.pill.good { color:var(--good); background:var(--good-bg); } .pill.warn { color:var(--warn); background:var(--warn-bg); } .pill.risk { color:var(--risk); background:var(--risk-bg); }
+
+/* ---------- callouts, findings, steps ---------- */
+.note { border-left:3px solid var(--accent); background:var(--surface); border-radius:0 var(--radius) var(--radius) 0; padding:13px 16px; font-size:14px; }
+.note.warn { border-left-color:var(--warn); } .note.risk { border-left-color:var(--risk); } .note.good { border-left-color:var(--good); }
+.note p { max-width:74ch; }
+.findings { display:grid; gap:12px; }
+.finding { display:grid; grid-template-columns:auto 1fr; gap:14px; background:var(--surface); border:1px solid var(--line); border-radius:var(--radius); padding:14px 16px; }
+.finding .idx { font-family:var(--font-mono); font-size:11px; color:var(--accent); padding-top:3px; letter-spacing:.06em; }
+.finding h3 { margin-bottom:4px; }
+.finding p { font-size:13.5px; color:var(--ink-2); margin:0; }
+.step { display:grid; grid-template-columns:auto 1fr; gap:14px; padding:14px 0; border-bottom:1px solid var(--line-soft); }
+.step:last-child { border-bottom:0; }
+.step-n { width:28px; height:28px; border-radius:50%; background:var(--accent-soft); color:var(--accent); font-family:var(--font-mono); font-size:12px; font-weight:600; display:flex; align-items:center; justify-content:center; }
+pre.code { margin:8px 0 0; background:var(--surface-2); border:1px solid var(--line); border-radius:8px; padding:10px 12px; font-family:var(--font-mono); font-size:12.5px; overflow-x:auto; }
+
+/* ---------- footer ---------- */
+footer { border-top:1px solid var(--line); background:var(--surface); color:var(--ink-3); font-size:12.5px; }
+footer .wrap { padding-block:22px 30px; }
+footer p { max-width:78ch; }
+
+@media print { .tabbar, .theme-btn { display:none; } [role="tabpanel"][hidden] { display:block; } }
+
+</style>
+</head>
+<body>
+<header class="masthead"><div class="wrap" id="masthead"></div></header>
+<nav class="tabbar" id="tabbar" aria-label="Report sections"><div class="wrap"><div class="tabs" id="tabs" role="tablist"></div></div></nav>
+<main><div class="wrap" id="panels"></div></main>
+<footer><div class="wrap" id="foot"></div></footer>
+<div class="tip" id="tip" role="presentation"></div>
+
+<!-- Report content. Edit this JSON, or rebuild with: node scripts/build.mjs <this-file.html> <this-file.html> -->
+<script type="application/json" id="report">
+{
+ "meta": {
+  "title": "Data Platform Options Review",
+  "eyebrow": "Example report · Sanitized view",
+  "palette": "centience",
+  "confidentiality": "internal",
+  "status": "draft",
+  "date": "2026-10-09",
+  "standfirst": "Three options were scored on the same 12 criteria. **Option B** leads with 52 of 60, **Option A** follows with 47, and **Option C** has 39. Only Option C has a trial behind it, so the gap at the top is not settled.",
+  "chips": [
+   {
+    "text": "12 criteria · 0–5 rubric"
+   },
+   {
+    "text": "Totals unweighted"
+   },
+   {
+    "text": "Illustrative numbers",
+    "tone": "draft"
+   }
+  ],
+  "notes": [
+   "All names are aliases. **Option A, B, C** and **App 1, 2, 3** stand for real products and systems. All figures in this example are made up."
+  ]
+ },
+ "tabs": [
+  {
+   "id": "summary",
+   "label": "Summary",
+   "color": "accent",
+   "sections": [
+    {
+     "heading": "Where the three options land",
+     "note": "Unweighted sum of 12 scores, out of 60. The weighting is not set, so read the per-criterion scores before the totals.",
+     "blocks": [
+      {
+       "type": "cards",
+       "items": [
+        {
+         "title": "Option B",
+         "tag": "Highest total",
+         "color": "c1",
+         "stats": [
+          {
+           "label": "Score",
+           "value": "52 / 60",
+           "pct": 87
+          },
+          {
+           "label": "Evidence",
+           "value": "Desk review"
+          }
+         ],
+         "line": "Strong on governance and automation. Not trial-verified.",
+         "goto": "scores",
+         "gotoLabel": "Scores"
+        },
+        {
+         "title": "Option A",
+         "tag": "Best fit",
+         "color": "c2",
+         "stats": [
+          {
+           "label": "Score",
+           "value": "47 / 60",
+           "pct": 78
+          },
+          {
+           "label": "Evidence",
+           "value": "Desk review"
+          }
+         ],
+         "line": "Leads on cloud fit and cost. Loses points on set-up effort.",
+         "goto": "scores",
+         "gotoLabel": "Scores"
+        },
+        {
+         "title": "Option C",
+         "tag": "Trial-backed",
+         "color": "c3",
+         "stats": [
+          {
+           "label": "Score",
+           "value": "39 / 60",
+           "pct": 65
+          },
+          {
+           "label": "Evidence",
+           "value": "Trial, 9 of 12 cells"
+          }
+         ],
+         "line": "Fastest to start. Weakest on access control.",
+         "goto": "scores",
+         "gotoLabel": "Scores"
+        }
+       ]
+      },
+      {
+       "type": "callout",
+       "kind": "warn",
+       "title": "Read this first",
+       "text": "Two of three options are desk reviews. The five-point gap at the top could close after a trial."
+      }
+     ]
+    },
+    {
+     "heading": "The shape of the scores",
+     "blocks": [
+      {
+       "type": "grid",
+       "blocks": [
+        {
+         "type": "radar",
+         "title": "Score by theme",
+         "hint": "Each axis is the average of its criteria, 0 to 5.",
+         "max": 5,
+         "axes": [
+          "Governance",
+          "Cost",
+          "Speed",
+          "Automation",
+          "AI use",
+          "Fit"
+         ],
+         "series": [
+          {
+           "name": "Option A",
+           "color": "c2",
+           "values": [
+            4,
+            4.5,
+            3,
+            4,
+            3.5,
+            5
+           ]
+          },
+          {
+           "name": "Option B",
+           "color": "c1",
+           "values": [
+            5,
+            3.5,
+            4,
+            5,
+            4.5,
+            4
+           ]
+          },
+          {
+           "name": "Option C",
+           "color": "c3",
+           "values": [
+            2.5,
+            4,
+            5,
+            3,
+            3,
+            3.5
+           ]
+          }
+         ]
+        },
+        {
+         "type": "bars",
+         "title": "Total score",
+         "hint": "Out of 60.",
+         "unit": " pts",
+         "max": 60,
+         "items": [
+          {
+           "label": "Option B",
+           "value": 52,
+           "color": "c1"
+          },
+          {
+           "label": "Option A",
+           "value": 47,
+           "color": "c2"
+          },
+          {
+           "label": "Option C",
+           "value": 39,
+           "color": "c3"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "scores",
+   "label": "All 12 criteria",
+   "color": "ink-3",
+   "sections": [
+    {
+     "heading": "Every criterion, side by side",
+     "note": "Green is 4 or 5. Amber is 3. Red is 2 or below.",
+     "blocks": [
+      {
+       "type": "table",
+       "caption": "Score, 0–5, for each criterion.",
+       "columns": [
+        {
+         "key": "c",
+         "label": "Criterion"
+        },
+        {
+         "key": "a",
+         "label": "Option A",
+         "kind": "score"
+        },
+        {
+         "key": "b",
+         "label": "Option B",
+         "kind": "score"
+        },
+        {
+         "key": "x",
+         "label": "Option C",
+         "kind": "score"
+        },
+        {
+         "key": "n",
+         "label": "Note"
+        }
+       ],
+       "rows": [
+        {
+         "c": "Access control",
+         "a": 4,
+         "b": 5,
+         "x": 2,
+         "n": "Option C has no row-level rules."
+        },
+        {
+         "c": "Cost clarity",
+         "a": 5,
+         "b": 3,
+         "x": 4,
+         "n": "Option B pricing has many parts."
+        },
+        {
+         "c": "Time to first result",
+         "a": 3,
+         "b": 4,
+         "x": 5,
+         "n": "Trial measured about 1 hour for Option C."
+        },
+        {
+         "c": "Automation",
+         "a": 4,
+         "b": 5,
+         "x": 3,
+         "n": ""
+        },
+        {
+         "c": "AI features",
+         "a": 3,
+         "b": 5,
+         "x": 3,
+         "n": "Checked in docs only."
+        },
+        {
+         "c": "Cloud fit",
+         "a": 5,
+         "b": 4,
+         "x": 3,
+         "n": ""
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "heading": "Cost and effort",
+     "blocks": [
+      {
+       "type": "grid",
+       "blocks": [
+        {
+         "type": "stacked",
+         "title": "Yearly cost by part",
+         "hint": "Thousands of dollars. Illustrative.",
+         "unit": "k",
+         "categories": [
+          "Option A",
+          "Option B",
+          "Option C"
+         ],
+         "series": [
+          {
+           "name": "Compute",
+           "color": "c1",
+           "values": [
+            60,
+            85,
+            40
+           ]
+          },
+          {
+           "name": "Storage",
+           "color": "c2",
+           "values": [
+            20,
+            18,
+            22
+           ]
+          },
+          {
+           "name": "People",
+           "color": "c3",
+           "values": [
+            90,
+            70,
+            110
+           ]
+          }
+         ]
+        },
+        {
+         "type": "line",
+         "title": "Set-up effort",
+         "hint": "Weeks of work for each month after the start. Illustrative.",
+         "x": [
+          "M1",
+          "M2",
+          "M3",
+          "M4",
+          "M5",
+          "M6"
+         ],
+         "unit": " wk",
+         "series": [
+          {
+           "name": "Option A",
+           "color": "c2",
+           "values": [
+            6,
+            5,
+            4,
+            3,
+            2,
+            2
+           ]
+          },
+          {
+           "name": "Option B",
+           "color": "c1",
+           "values": [
+            8,
+            7,
+            5,
+            3,
+            2,
+            1
+           ]
+          },
+          {
+           "name": "Option C",
+           "color": "c3",
+           "values": [
+            3,
+            3,
+            3,
+            3,
+            3,
+            3
+           ]
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "landscape",
+   "label": "Landscape",
+   "color": "c4",
+   "sections": [
+    {
+     "heading": "Where the data comes from and goes",
+     "note": "Hover a block to see what it connects to.",
+     "blocks": [
+      {
+       "type": "flow",
+       "title": "Data path, end to end",
+       "cols": 5,
+       "rows": 3,
+       "nodes": [
+        {
+         "id": "a1",
+         "col": 0,
+         "row": 0,
+         "title": "App 1",
+         "sub": "Payments",
+         "color": "c1"
+        },
+        {
+         "id": "a2",
+         "col": 0,
+         "row": 1,
+         "title": "App 2",
+         "sub": "Lending",
+         "color": "c1"
+        },
+        {
+         "id": "a3",
+         "col": 0,
+         "row": 2,
+         "title": "App 3",
+         "sub": "Public API",
+         "color": "c1"
+        },
+        {
+         "id": "land",
+         "col": 1,
+         "row": 1,
+         "title": "Landing",
+         "sub": "Files arrive",
+         "color": "c3"
+        },
+        {
+         "id": "gate",
+         "col": 2,
+         "row": 1,
+         "title": "Checks",
+         "sub": "Pass or hold",
+         "color": "risk"
+        },
+        {
+         "id": "core",
+         "col": 3,
+         "row": 1,
+         "title": "Clean data",
+         "sub": "Typed, joined",
+         "color": "c2"
+        },
+        {
+         "id": "out",
+         "col": 4,
+         "row": 0,
+         "title": "Reports",
+         "sub": "Analysts",
+         "color": "c4"
+        },
+        {
+         "id": "ai",
+         "col": 4,
+         "row": 2,
+         "title": "AI use",
+         "sub": "Agents",
+         "color": "c5"
+        }
+       ],
+       "edges": [
+        [
+         "a1",
+         "land"
+        ],
+        [
+         "a2",
+         "land"
+        ],
+        [
+         "a3",
+         "land"
+        ],
+        [
+         "land",
+         "gate"
+        ],
+        [
+         "gate",
+         "core"
+        ],
+        [
+         "core",
+         "out"
+        ],
+        [
+         "core",
+         "ai"
+        ]
+       ]
+      },
+      {
+       "type": "grid",
+       "blocks": [
+        {
+         "type": "treemap",
+         "title": "Where the bytes are",
+         "hint": "Share of total size. Groups are aliases.",
+         "unit": " TB",
+         "items": [
+          {
+           "label": "Group 1",
+           "value": 18,
+           "group": "App 1"
+          },
+          {
+           "label": "Group 2",
+           "value": 6,
+           "group": "App 1"
+          },
+          {
+           "label": "Group 1",
+           "value": 9,
+           "group": "App 2"
+          },
+          {
+           "label": "Group 2",
+           "value": 3,
+           "group": "App 2"
+          },
+          {
+           "label": "Group 1",
+           "value": 4,
+           "group": "App 3"
+          }
+         ]
+        },
+        {
+         "type": "donut",
+         "title": "Tables by readiness",
+         "hint": "Count of tables.",
+         "center": "40",
+         "centerSub": "tables",
+         "items": [
+          {
+           "label": "Ready",
+           "value": 22,
+           "color": "good"
+          },
+          {
+           "label": "Needs work",
+           "value": 12,
+           "color": "warn"
+          },
+          {
+           "label": "Blocked",
+           "value": 6,
+           "color": "risk"
+          }
+         ]
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  },
+  {
+   "id": "next",
+   "label": "Findings and plan",
+   "color": "c5",
+   "sections": [
+    {
+     "heading": "What the review found",
+     "blocks": [
+      {
+       "type": "findings",
+       "items": [
+        {
+         "title": "Access control decides the ranking",
+         "text": "Option C is the fastest to start but has the weakest rules. This single criterion moves it from second to third."
+        },
+        {
+         "title": "Cost is not comparable yet",
+         "text": "Each option prices compute, storage and support in a different way. A shared test workload would give one **comparable** number."
+        },
+        {
+         "title": "Two options have no trial",
+         "text": "Scores for Option A and Option B come from documents. A 2-week trial would turn them into evidence."
+        }
+       ]
+      },
+      {
+       "type": "kpis",
+       "items": [
+        {
+         "label": "Criteria",
+         "value": "12"
+        },
+        {
+         "label": "Trial-verified cells",
+         "value": "9 / 36",
+         "tone": "warn"
+        },
+        {
+         "label": "Options",
+         "value": "3"
+        },
+        {
+         "label": "Open questions",
+         "value": "4",
+         "tone": "risk"
+        }
+       ]
+      }
+     ]
+    },
+    {
+     "heading": "Next steps",
+     "blocks": [
+      {
+       "type": "steps",
+       "items": [
+        {
+         "title": "Agree the weights",
+         "text": "The review group sets a weight for each criterion."
+        },
+        {
+         "title": "Run a shared test",
+         "text": "Run the same sample workload on Option A and Option B."
+        },
+        {
+         "title": "Re-score and decide",
+         "text": "Update the table with trial results. Present the decision."
+        }
+       ]
+      }
+     ]
+    }
+   ]
+  }
+ ]
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+/* Report engine: reads the JSON, builds tabs and blocks, draws D3 charts. No network. */
+(function () {
+  const R = JSON.parse(document.getElementById("report").textContent);
+  const M = R.meta;
+  const $ = (s, r = document) => r.querySelector(s);
+  const esc = s => String(s == null ? "" : s).replace(/[&<>"']/g, c => ({ "&": "&amp;", "<": "&lt;", ">": "&gt;", '"': "&quot;", "'": "&#39;" }[c]));
+  const rich = s => esc(s).replace(/\*\*(.+?)\*\*/g, "<b>$1</b>");
+  const TOK = ["c1", "c2", "c3", "c4", "c5", "c6", "good", "warn", "risk", "accent", "ink-3"];
+  const col = (t, i) => `var(--${TOK.includes(t) ? t : "c" + ((i || 0) % 6 + 1)})`;
+  const tip = $("#tip");
+  const showTip = (e, html) => { tip.innerHTML = html; tip.style.opacity = 1; tip.style.left = Math.min(e.clientX + 12, innerWidth - 250) + "px"; tip.style.top = e.clientY + 14 + "px"; };
+  const hideTip = () => { tip.style.opacity = 0; };
+  const fmt = (v, u) => (typeof v === "number" ? d3.format(",")(v) : v) + (u || "");
+
+  /* ---------- masthead and footer ---------- */
+  $("#masthead").innerHTML =
+    `<p class="eyebrow">${esc(M.eyebrow || "")}</p>` +
+    `<button class="theme-btn" id="themeBtn" type="button" aria-live="polite"><span class="tdot" aria-hidden="true"></span><span id="themeLabel">Auto</span></button>` +
+    `<h1>${esc(M.title)}</h1><p class="standfirst">${rich(M.standfirst || "")}</p>` +
+    `<div class="meta-row">` +
+    `<span class="chip ${M.confidentiality === "public" ? "good" : "warn"}">${esc(M.confidentiality)} &middot; sanitized view</span>` +
+    (M.status ? `<span class="chip ${M.status === "draft" ? "draft" : ""}">${esc(M.status)}</span>` : "") +
+    (M.date ? `<span class="chip">${esc(M.date)}</span>` : "") +
+    (M.chips || []).map(c => c.href
+      ? `<a class="chip" href="${esc(c.href)}" target="_blank" rel="noopener noreferrer">${esc(c.text)}</a>`
+      : `<span class="chip ${esc(c.tone || "")}">${esc(c.text)}</span>`).join("") + `</div>`;
+  $("#foot").innerHTML = (M.notes || []).map(n => `<p>${rich(n)}</p>`).join("") +
+    `<p>This report is a sanitized view. It names no production tables, columns, accounts, or credentials.</p>`;
+
+  /* ---------- theme toggle: Auto, Light, Dark ---------- */
+  (function () {
+    const root = document.documentElement, btn = $("#themeBtn"), lab = $("#themeLabel");
+    const get = () => { try { return localStorage.getItem("report-theme"); } catch (e) { return null; } };
+    const draw = () => { const t = root.getAttribute("data-theme"); lab.textContent = t === "dark" ? "Dark" : t === "light" ? "Light" : "Auto"; };
+    btn.addEventListener("click", () => {
+      const t = root.getAttribute("data-theme"), n = t === "light" ? "dark" : t === "dark" ? null : "light";
+      if (n) root.setAttribute("data-theme", n); else root.removeAttribute("data-theme");
+      try { n ? localStorage.setItem("report-theme", n) : localStorage.removeItem("report-theme"); } catch (e) {}
+      draw();
+    });
+    draw();
+  })();
+
+  /* ---------- svg helpers ---------- */
+  const svgOf = (el, w, h, label) => d3.select(el).append("svg").attr("viewBox", `0 0 ${w} ${h}`).attr("role", "img").attr("aria-label", label || "Chart");
+  const T = (g, x, y, s, cls, anchor) => g.append("text").attr("x", x).attr("y", y).attr("class", cls || null).attr("text-anchor", anchor || "start").text(s);
+  const legend = (el, items) => { if (items.length > 1) el.insertAdjacentHTML("beforeend", `<div class="legend">${items.map(i => `<span><i style="background:${i.c}"></i>${esc(i.n)}</span>`).join("")}</div>`); };
+  const hover = (sel, html) => sel.on("mousemove", (e, d) => showTip(e, html(d))).on("mouseleave", hideTip);
+
+  /* ---------- charts ---------- */
+  const C = {};
+
+  C.bars = (el, b, W) => {
+    const items = b.sort === false ? b.items : [...b.items].sort((a, c) => c.value - a.value);
+    const rh = 34, lw = b.labelWidth || 170, H = items.length * rh + 6, max = b.max || d3.max(items, d => d.value);
+    const svg = svgOf(el, W, H, b.title), x = d3.scaleLinear([0, max], [0, W - lw - 70]);
+    const g = svg.selectAll("g").data(items).join("g").attr("transform", (d, i) => `translate(0,${i * rh + 3})`);
+    g.append("text").attr("class", "lbl").attr("x", lw - 10).attr("y", rh / 2 + 4).attr("text-anchor", "end").text(d => d.label);
+    g.append("rect").attr("x", lw).attr("y", 5).attr("height", rh - 12).attr("rx", 4).attr("class", "gx").style("fill", (d, i) => col(d.color, b.single ? 0 : i)).attr("width", d => x(d.value));
+    g.append("text").attr("class", "val").attr("x", d => lw + x(d.value) + 8).attr("y", rh / 2 + 4).text(d => fmt(d.value, b.unit));
+  };
+
+  C.stacked = (el, b, W) => {
+    const rh = 38, lw = b.labelWidth || 170, H = b.categories.length * rh + 6;
+    const tot = b.categories.map((c, i) => d3.sum(b.series, s => s.values[i])), max = b.max || d3.max(tot);
+    const svg = svgOf(el, W, H, b.title), x = d3.scaleLinear([0, max], [0, W - lw - 70]);
+    b.categories.forEach((c, i) => {
+      const g = svg.append("g").attr("transform", `translate(0,${i * rh + 3})`); let acc = 0;
+      T(g, lw - 10, rh / 2 + 4, c, "lbl", "end");
+      b.series.forEach((s, k) => {
+        const v = s.values[i];
+        hover(g.append("rect").attr("x", lw + x(acc)).attr("y", 5).attr("width", Math.max(0, x(v) - 1)).attr("height", rh - 12).style("fill", col(s.color, k)).datum(v), d => `${esc(s.name)}: <b>${fmt(d, b.unit)}</b>`);
+        acc += v;
+      });
+      T(g, lw + x(acc) + 8, rh / 2 + 4, fmt(acc, b.unit), "val");
+    });
+    legend(el, b.series.map((s, k) => ({ n: s.name, c: col(s.color, k) })));
+  };
+
+  C.donut = (el, b, W) => {
+    const H = Math.min(W, 300), r = H / 2 - 6, svg = svgOf(el, W, H, b.title), g = svg.append("g").attr("transform", `translate(${W / 2},${H / 2})`);
+    const arc = d3.arc().innerRadius(r * 0.62).outerRadius(r).padAngle(0.015).cornerRadius(4), total = d3.sum(b.items, d => d.value);
+    const arcs = d3.pie().sort(null).value(d => d.value)(b.items);
+    const p = g.selectAll("path").data(arcs).join("path").attr("class", "fi").attr("d", arc).style("fill", (d, i) => col(d.data.color, i));
+    hover(p, d => `${esc(d.data.label)}: <b>${fmt(d.data.value, b.unit)}</b> (${Math.round(d.data.value / total * 100)}%)`);
+    if (b.center) { T(g, 0, 4, b.center, "val", "middle").style("font-size", "22px"); if (b.centerSub) T(g, 0, 24, b.centerSub, "", "middle"); }
+    legend(el, b.items.map((d, i) => ({ n: `${d.label} (${fmt(d.value, b.unit)})`, c: col(d.color, i) })));
+  };
+
+  C.line = (el, b, W) => {
+    const H = b.height || 280, m = { l: 44, r: 16, t: 12, b: 30 }, svg = svgOf(el, W, H, b.title);
+    const x = d3.scalePoint(b.x, [m.l, W - m.r]).padding(0.3);
+    const ymax = b.max || d3.max(b.series, s => d3.max(s.values)) * 1.1, y = d3.scaleLinear([b.min || 0, ymax], [H - m.b, m.t]).nice();
+    const gr = svg.append("g").attr("class", "grid axis");
+    y.ticks(5).forEach(t => { gr.append("line").attr("x1", m.l).attr("x2", W - m.r).attr("y1", y(t)).attr("y2", y(t)); T(gr, m.l - 8, y(t) + 4, fmt(t, b.unit), "", "end"); });
+    b.x.forEach(v => T(gr, x(v), H - 8, v, "", "middle"));
+    const ln = d3.line().x((d, i) => x(b.x[i])).y(d => y(d)).curve(d3.curveMonotoneX);
+    b.series.forEach((s, k) => {
+      const c = col(s.color, k);
+      svg.append("path").attr("class", "dl").attr("d", ln(s.values)).attr("pathLength", 1).attr("fill", "none").style("stroke", c).attr("stroke-width", 2.6).attr("stroke-linecap", "round");
+      hover(svg.selectAll(null).data(s.values.map((v, i) => ({ v, i }))).join("circle").attr("cx", d => x(b.x[d.i])).attr("cy", d => y(d.v)).attr("r", 4.5).style("fill", c), d => `${esc(s.name)} · ${esc(b.x[d.i])}: <b>${fmt(d.v, b.unit)}</b>`);
+    });
+    legend(el, b.series.map((s, k) => ({ n: s.name, c: col(s.color, k) })));
+  };
+
+  C.radar = (el, b, W) => {
+    const H = Math.min(W, 380), cx = W / 2, cy = H / 2, r = H / 2 - 44, n = b.axes.length, max = b.max || 5, svg = svgOf(el, W, H, b.title);
+    const ang = i => i / n * Math.PI * 2 - Math.PI / 2, pt = (i, v) => [cx + Math.cos(ang(i)) * r * v / max, cy + Math.sin(ang(i)) * r * v / max];
+    for (let k = 1; k <= max; k++) svg.append("polygon").attr("points", b.axes.map((a, i) => pt(i, k).join(",")).join(" ")).attr("fill", "none").style("stroke", "var(--line)");
+    b.axes.forEach((a, i) => { const [x, y] = pt(i, max + 0.55); svg.append("line").attr("x1", cx).attr("y1", cy).attr("x2", pt(i, max)[0]).attr("y2", pt(i, max)[1]).style("stroke", "var(--line)"); T(svg, x, y + 4, a, "", "middle"); });
+    b.series.forEach((s, k) => {
+      const c = col(s.color, k);
+      svg.append("polygon").attr("points", s.values.map((v, i) => pt(i, v).join(",")).join(" ")).style("fill", c).style("stroke", c).attr("fill-opacity", 0.16).attr("stroke-width", 2);
+      hover(svg.selectAll(null).data(s.values.map((v, i) => ({ v, i }))).join("circle").attr("cx", d => pt(d.i, d.v)[0]).attr("cy", d => pt(d.i, d.v)[1]).attr("r", 4).style("fill", c), d => `${esc(s.name)} · ${esc(b.axes[d.i])}: <b>${d.v}</b>`);
+    });
+    legend(el, b.series.map((s, k) => ({ n: s.name, c: col(s.color, k) })));
+  };
+
+  C.treemap = (el, b, W) => {
+    const H = b.height || 280, svg = svgOf(el, W, H, b.title);
+    const groups = d3.group(b.items, d => d.group || "");
+    const root = d3.hierarchy({ children: [...groups].map(([k, v]) => ({ name: k, children: v })) }).sum(d => d.value);
+    d3.treemap().size([W, H]).paddingInner(3).round(true)(root);
+    const cell = svg.selectAll("g").data(root.leaves()).join("g").attr("transform", d => `translate(${d.x0},${d.y0})`);
+    hover(cell.append("rect").attr("width", d => d.x1 - d.x0).attr("height", d => d.y1 - d.y0).attr("rx", 5).style("fill", (d, i) => col(d.data.color, [...groups.keys()].indexOf(d.parent.data.name))).attr("fill-opacity", 0.85), d => `${esc(d.data.label)}: <b>${fmt(d.data.value, b.unit)}</b>`);
+    cell.filter(d => d.x1 - d.x0 > 70 && d.y1 - d.y0 > 30).append("text").attr("x", 8).attr("y", 18).attr("class", "t1").style("fill", "#fff").style("font-size", "12px").style("font-weight", 600).text(d => d.data.label);
+    cell.filter(d => d.x1 - d.x0 > 70 && d.y1 - d.y0 > 46).append("text").attr("x", 8).attr("y", 34).style("fill", "#fff").style("font-size", "11px").text(d => fmt(d.data.value, b.unit));
+    if (groups.size > 1) legend(el, [...groups.keys()].map((k, i) => ({ n: k, c: col(null, i) })));
+  };
+
+  C.flow = (el, b, W) => {
+    const cols = b.cols, rows = b.rows || 1, gx = 46, gy = 22, nh = b.nodeHeight || 62, H = rows * nh + (rows - 1) * gy + 4;
+    const cw = (W - gx * (cols - 1)) / cols, svg = svgOf(el, W, H, b.title), byId = {};
+    const defs = svg.append("defs"); defs.append("marker").attr("id", "arw").attr("viewBox", "0 0 10 10").attr("refX", 8).attr("refY", 5).attr("markerWidth", 6).attr("markerHeight", 6).attr("orient", "auto").append("path").attr("d", "M0,0L10,5L0,10z").style("fill", "var(--ink-3)");
+    b.nodes.forEach(n => { n.x = n.col * (cw + gx); n.y = n.row * (nh + gy) + 2; n.w = cw * (n.cs || 1) + gx * ((n.cs || 1) - 1); byId[n.id] = n; });
+    const edges = b.edges.map(([a, c, l]) => ({ a: byId[a], c: byId[c], l }));
+    const ep = svg.selectAll("path.edge").data(edges).join("path").attr("class", "edge").attr("marker-end", "url(#arw)").attr("d", e => {
+      const A = e.a, B = e.c;
+      if (B.x > A.x + A.w - 1) return d3.linkHorizontal()({ source: [A.x + A.w, A.y + nh / 2], target: [B.x - 4, B.y + nh / 2] });
+      return `M${A.x + A.w / 2},${A.y + (B.y > A.y ? nh : 0)}L${B.x + B.w / 2},${B.y + (B.y > A.y ? -4 : nh + 4)}`;
+    });
+    const ng = svg.selectAll("g.node").data(b.nodes).join("g").attr("class", "node").attr("transform", d => `translate(${d.x},${d.y})`).attr("tabindex", 0);
+    ng.append("rect").attr("width", d => d.w).attr("height", nh).attr("rx", 10).style("stroke", (d, i) => col(d.color, i));
+    ng.append("text").attr("class", "t1").attr("x", d => d.w / 2).attr("y", d => d.sub ? 26 : 36).attr("text-anchor", "middle").text(d => d.title);
+    ng.append("text").attr("class", "t2").attr("x", d => d.w / 2).attr("y", 45).attr("text-anchor", "middle").text(d => d.sub || "");
+    const focus = d => { const on = new Set([d.id]); edges.forEach(e => { if (e.a.id === d.id) on.add(e.c.id); if (e.c.id === d.id) on.add(e.a.id); }); ng.classed("dim", n => !on.has(n.id)); ep.classed("dim", e => e.a.id !== d.id && e.c.id !== d.id); };
+    const clear = () => { ng.classed("dim", false); ep.classed("dim", false); };
+    ng.on("mouseenter focus", (e, d) => focus(d)).on("mouseleave blur", clear);
+  };
+
+  /* ---------- blocks ---------- */
+  function table(b) {
+    const th = b.columns.map(c => `<th class="${c.kind === "num" ? "num" : c.kind === "score" ? "score" : ""}">${esc(c.label)}</th>`).join("");
+    const body = b.rows.map(r => "<tr>" + b.columns.map(c => {
+      const v = r[c.key];
+      if (c.kind === "score") { const cl = v >= 4 ? "hi" : v === 3 ? "mid" : "lo"; return `<td class="score ${cl}">${esc(v)}</td>`; }
+      if (c.kind === "num") return `<td class="num">${esc(typeof v === "number" ? d3.format(",")(v) : v)}</td>`;
+      if (v && typeof v === "object") return `<td><span class="pill ${esc(v.tone || "")}">${esc(v.text)}</span></td>`;
+      return `<td>${rich(v)}</td>`;
+    }).join("") + "</tr>").join("");
+    return `<div class="scroller"><table>${b.caption ? `<caption>${esc(b.caption)}</caption>` : ""}<thead><tr>${th}</tr></thead><tbody>${body}</tbody></table></div>`;
+  }
+
+  function block(b, narrow) {
+    const el = document.createElement("div");
+    const W = b.width || (narrow ? 560 : 1000);
+    if (C[b.type]) {
+      el.className = "panel chart";
+      el.innerHTML = (b.title ? `<h3>${esc(b.title)}</h3>` : "") + (b.hint ? `<p class="hint">${rich(b.hint)}</p>` : "");
+      requestAnimationFrame(() => C[b.type](el, b, W));
+      return el;
+    }
+    switch (b.type) {
+      case "text": el.innerHTML = b.paragraphs.map(p => `<p>${rich(p)}</p>`).join(""); break;
+      case "kpis": el.className = "statgrid"; el.innerHTML = b.items.map(k => `<div class="kpi"><div class="k">${esc(k.label)}</div><div class="v ${esc(k.tone || "")}">${esc(k.value)}</div>${k.sub ? `<div class="sub">${esc(k.sub)}</div>` : ""}</div>`).join(""); break;
+      case "cards": el.className = "board"; el.innerHTML = b.items.map((c, i) => `<article class="cand" style="--dot:${col(c.color, i)}"><div class="cand-head"><span class="cand-name">${esc(c.title)}</span><span class="rank">${esc(c.tag || "")}</span></div>` +
+        `<div class="stat-list">${(c.stats || []).map(s => `<div class="stat"><span>${esc(s.label)}</span><b>${esc(s.value)}</b>${s.pct != null ? `<div class="bar"><i style="width:${Math.max(0, Math.min(100, s.pct))}%"></i></div>` : ""}</div>`).join("")}</div>` +
+        (c.line ? `<p class="cand-line">${rich(c.line)}</p>` : "") + (c.goto ? `<button class="details-btn" data-goto="${esc(c.goto)}">${esc(c.gotoLabel || "Detail")} &rarr;</button>` : "") + `</article>`).join(""); break;
+      case "table": el.innerHTML = table(b); break;
+      case "callout": el.className = "note " + (b.kind || ""); el.innerHTML = (b.title ? `<p><strong>${esc(b.title)}</strong></p>` : "") + `<p>${rich(b.text)}</p>`; break;
+      case "findings": el.className = "findings"; el.innerHTML = b.items.map((f, i) => `<div class="finding"><span class="idx">${String(i + 1).padStart(2, "0")}</span><div><h3>${esc(f.title)}</h3><p>${rich(f.text)}</p></div></div>`).join(""); break;
+      case "steps": el.className = "panel"; el.innerHTML = b.items.map((s, i) => `<div class="step"><span class="step-n">${i + 1}</span><div><h3>${esc(s.title)}</h3><p>${rich(s.text || "")}</p>${s.code ? `<pre class="code">${esc(s.code)}</pre>` : ""}</div></div>`).join(""); break;
+      case "grid": el.className = "cols"; el.style.setProperty("--min", (b.min || 320) + "px"); b.blocks.forEach(x => el.appendChild(block(x, true))); break;
+    }
+    return el;
+  }
+
+  /* ---------- tabs ---------- */
+  const tabs = R.tabs, tabsEl = $("#tabs"), panels = $("#panels");
+  if (tabs.length === 1) $("#tabbar").hidden = true;
+  tabs.forEach((t, i) => {
+    const btn = document.createElement("button");
+    btn.className = "tab"; btn.id = "tab-" + t.id; btn.setAttribute("role", "tab"); btn.setAttribute("aria-controls", "panel-" + t.id);
+    btn.style.setProperty("--dot", col(t.color, i)); btn.innerHTML = `<span class="dot" aria-hidden="true"></span>${esc(t.label)}`;
+    tabsEl.appendChild(btn);
+    const p = document.createElement("div");
+    p.id = "panel-" + t.id; p.setAttribute("role", "tabpanel"); p.setAttribute("aria-labelledby", btn.id); p.hidden = true; p.className = "stack";
+    t.sections.forEach(s => {
+      const sec = document.createElement("section");
+      sec.innerHTML = `<h2>${esc(s.heading)}</h2>` + (s.note ? `<p class="section-note">${rich(s.note)}</p>` : "");
+      const body = document.createElement("div"); body.className = "stack";
+      s.blocks.forEach(b => body.appendChild(block(b, false)));
+      sec.appendChild(body); p.appendChild(sec);
+    });
+    panels.appendChild(p);
+  });
+  function show(id) {
+    tabs.forEach(t => { const on = t.id === id; $("#tab-" + t.id).setAttribute("aria-selected", on); $("#panel-" + t.id).hidden = !on; });
+    try { history.replaceState(null, "", "#" + id); } catch (e) {}
+    scrollTo({ top: 0 });
+  }
+  tabsEl.addEventListener("click", e => { const b = e.target.closest(".tab"); if (b) show(b.id.slice(4)); });
+  tabsEl.addEventListener("keydown", e => {
+    const i = tabs.findIndex(t => $("#tab-" + t.id).getAttribute("aria-selected") === "true"), d = e.key === "ArrowRight" ? 1 : e.key === "ArrowLeft" ? -1 : 0;
+    if (d) { const n = tabs[(i + d + tabs.length) % tabs.length]; show(n.id); $("#tab-" + n.id).focus(); }
+  });
+  document.addEventListener("click", e => { const g = e.target.closest("[data-goto]"); if (g) show(g.dataset.goto); });
+  const first = tabs.find(t => "#" + t.id === location.hash) || tabs[0];
+  show(first.id);
+  document.title = M.title;
+})();
+
+</script>
+</body>
+</html>
