@@ -4,6 +4,7 @@ dist/
 build/
 coverage/
 *.tsbuildinfo
+generated_output/
 
 # Local configuration and logs
 .env
