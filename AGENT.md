@@ -17,7 +17,9 @@ each skill independently understandable and copyable.
 
 ## Planner → worker ↔ reviewer workflow
 
-Use AgentRig as a manager-driven loop:
+Use AgentRig as a manager-driven loop. The manager process must run outside any
+Codex worker or reviewer session. Do not start `agent-rig loop` from inside a
+Codex task.
 
 1. The planner and human agree on a phase plan.
 2. The planner breaks it into small tasks with explicit dependencies.
@@ -33,6 +35,46 @@ Use AgentRig as a manager-driven loop:
 AgentRig does not infer or rewrite dependencies automatically. The manager must
 inspect the board and perform each unblock deliberately. Use the local CLI for
 task and handoff state; do not edit the workflow SQLite database directly.
+
+### Required process boundary
+
+Use three separate processes:
+
+1. A normal host terminal runs the AgentRig manager loop.
+2. The manager launches the worker Codex process.
+3. After the worker handoff, the manager launches the reviewer Codex process.
+
+Do not run the manager loop from a worker or reviewer prompt. That creates a
+nested Codex invocation. The child app-server can fail before it reads the task
+with permission errors such as `could not create PATH aliases` or `failed to
+initialize in-process app-server client`.
+
+Before starting the loop, verify the child runtime from the same terminal:
+
+```sh
+command -v agent-rig
+command -v codex
+codex --version
+agent-rig status
+```
+
+The terminal must have the required Codex authentication and network access.
+Do not assume that permission granted to the parent Codex session is available
+to the child Codex process.
+
+If a child Codex process fails before it changes the task or writes a handoff:
+
+- Treat the result as an infrastructure failure, not a code failure.
+- Do not manually mark the task `done`.
+- Keep the task `ready` for a worker failure or `review` for a reviewer failure.
+- Record the command error in the run notes and retry from the host terminal.
+- Mark the task `blocked` only when the agent reports a real task blocker or
+  the manager has confirmed a stale task state after a successful child run.
+
+Do not use `--dangerously-bypass-approvals-and-sandbox` as a general fix. If the
+host environment cannot start child Codex processes, use a separately managed
+worker/reviewer runner or perform the task manually while preserving the normal
+worker and reviewer handoffs.
 
 ```sh
 node /Users/inotives/workspaces/agent-rig/dist/index.js status

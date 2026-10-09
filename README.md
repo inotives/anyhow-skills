@@ -58,6 +58,7 @@ optional and must not change the portable core instructions.
 | Skill | Status | Description |
 | --- | --- | --- |
 | [Singapore Toto](skills/singapore-toto/) | Planned | Local SQLite history, refresh/import workflow, and descriptive heuristic estimates. |
+| [Interactive Learning HTML](skills/interactive-learning-html/) | Experimental | Self-checking HTML explainers with deliberate chart, diagram, and SVG choices. |
 
 The Singapore Toto skill is the first migration planned for this collection.
 It is not available in this checkout until Phase 1 implementation is complete.
