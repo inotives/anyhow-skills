@@ -1,0 +1,57 @@
+<!doctype html>
+<html lang="en" data-palette="{{PALETTE}}" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>{{TITLE}}</title>
+<style>
+{{CSS}}
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <h1 id="title"></h1>
+    <span class="tagline" id="tagline"></span>
+  </div>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Views"></div>
+  <button class="iconbtn" id="palBtn" aria-label="Choose colour palette">🎨</button>
+  <button class="iconbtn" id="srcBtn" aria-label="Sources and notes">ⓘ</button>
+  <button class="iconbtn" id="theme" aria-label="Switch light or dark mode">◐</button>
+</header>
+
+<main id="stage"></main>
+
+<dialog id="pop" aria-labelledby="popT">
+  <button class="btn ghost x" id="popX" aria-label="Close">✕</button>
+  <span class="layer" id="popL"></span>
+  <h2 id="popT"></h2>
+  <p id="popP" style="font-size:1.15rem;font-weight:800;color:var(--accent)" hidden></p>
+  <p id="popA" style="font-size:1.05rem;font-weight:700"></p>
+  <p id="popB" style="color:var(--muted)"></p>
+  <button class="btn" id="popSay" hidden style="margin-top:8px">🔊 Listen</button>
+</dialog>
+
+<dialog id="srcDlg" aria-labelledby="srcT">
+  <button class="btn ghost x" id="srcX" aria-label="Close">✕</button>
+  <h2 id="srcT">Sources and notes</h2>
+  <ul id="srcList" style="padding-left:1.1rem;margin:8px 0"></ul>
+  <p style="font-size:.88rem;color:var(--muted)"><b>Made with:</b> plain HTML, CSS, JavaScript and inline SVG. No external libraries. No data leaves this page.</p>
+</dialog>
+
+<dialog id="palDlg" aria-labelledby="palT">
+  <button class="btn ghost x" id="palX" aria-label="Close">✕</button>
+  <h2 id="palT">Colour palette</h2>
+  <div class="swatches" id="swatches"></div>
+</dialog>
+
+<!-- Page content. Edit this JSON, or rebuild with: node scripts/build.mjs <this-file.html> <this-file.html> -->
+<script type="application/json" id="content">
+{{CONTENT}}
+</script>
+<script>
+{{ENGINE}}
+</script>
+</body>
+</html>

@@ -1,0 +1,1532 @@
+<!doctype html>
+<html lang="en" data-palette="graphite" data-theme="dark">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>How Databricks works</title>
+<style>
+/* ===== interactive-learning-html · shared theme =====
+   One design system. Palettes change colour only.
+   Select with <html data-palette="..." data-theme="dark|light">.
+   Palettes: graphite | ocean | forest | ember | dusk
+   Token roles:
+     --accent  primary action colour     --hl   flow and highlight colour
+     --k1..k9  categorical colours for diagram blocks (k7 = neutral, k8 = ops, k9 = storage)
+*/
+
+/* ---------- palettes (dark = default) ---------- */
+:root,[data-palette="graphite"]{
+  --bg:#15171c; --bg2:#1d2027; --card:#20242c; --card2:#282d37; --line:#363c49; --ink:#eef0f4; --muted:#a4acbb;
+  --accent:#5aa9ff; --on-accent:#0b1220; --hl:#ffc857; --good:#4ad8a6;
+  --k1:#5ad0e6; --k2:#7f9cff; --k3:#4ad8a6; --k4:#ffa94d; --k5:#ff7a93; --k6:#b5e35a; --k7:#8791a6; --k8:#a9b4ff; --k9:#5fb3c4;
+  --viz:#101216; --edge:#4a5163; --sink:#eef0f4; --smute:#b4bccb; --shd:rgba(0,0,0,.4);
+}
+[data-palette="graphite"][data-theme="light"]{
+  --bg:#f3f4f7; --bg2:#e8eaf0; --card:#ffffff; --card2:#f0f2f6; --line:#d3d8e2; --ink:#1b1f27; --muted:#566074;
+  --accent:#1f6fe0; --on-accent:#ffffff; --hl:#d98a00; --good:#0b9a6c;
+  --k1:#0891b2; --k2:#4f6fe0; --k3:#0b9a6c; --k4:#d9730d; --k5:#d6335a; --k6:#5a9a12; --k7:#6b7488; --k8:#6a74d0; --k9:#20808f;
+  --viz:#ffffff; --edge:#aab2c3; --sink:#1b1f27; --smute:#566074; --shd:rgba(30,40,70,.16);
+}
+[data-palette="ocean"]{
+  --bg:#0c1a2b; --bg2:#12263c; --card:#142c45; --card2:#1b3856; --line:#2b4e75; --ink:#eaf4ff; --muted:#9fbad6;
+  --accent:#46c1ff; --on-accent:#06182a; --hl:#ffd166; --good:#3fe0b5;
+  --k1:#46c1ff; --k2:#7aa2ff; --k3:#3fe0b5; --k4:#ffb454; --k5:#ff7f9c; --k6:#a3e36b; --k7:#7f98b5; --k8:#8fb0ff; --k9:#4fb7c9;
+  --viz:#081523; --edge:#3b5f87; --sink:#eaf4ff; --smute:#b0c8e2; --shd:rgba(0,0,0,.4);
+}
+[data-palette="ocean"][data-theme="light"]{
+  --bg:#eef6fd; --bg2:#e0eefb; --card:#ffffff; --card2:#eaf3fc; --line:#bcd3ea; --ink:#0d2a45; --muted:#4a6b8a;
+  --accent:#0a7bc4; --on-accent:#ffffff; --hl:#c98600; --good:#0b9a78;
+  --k1:#0a8fc4; --k2:#3f66d6; --k3:#0b9a78; --k4:#d9720d; --k5:#d6335a; --k6:#5a9a12; --k7:#62809e; --k8:#5a79d6; --k9:#1a8798;
+  --viz:#ffffff; --edge:#a9c2dc; --sink:#0d2a45; --smute:#4a6b8a; --shd:rgba(20,70,120,.16);
+}
+[data-palette="forest"]{
+  --bg:#0f1a14; --bg2:#162419; --card:#1a2c20; --card2:#223a2a; --line:#35553f; --ink:#edf6ee; --muted:#a3bfa8;
+  --accent:#7bd88f; --on-accent:#0a1a0f; --hl:#ffd36b; --good:#7bd88f;
+  --k1:#6fd3c4; --k2:#a1a8f0; --k3:#7bd88f; --k4:#ffb15c; --k5:#f58aa0; --k6:#c7e86a; --k7:#8aa493; --k8:#86c3a8; --k9:#67b7b0;
+  --viz:#0a130e; --edge:#3e6149; --sink:#edf6ee; --smute:#b3ccb8; --shd:rgba(0,0,0,.4);
+}
+[data-palette="forest"][data-theme="light"]{
+  --bg:#f1f7f1; --bg2:#e3efe4; --card:#ffffff; --card2:#edf5ee; --line:#c2d8c5; --ink:#12301b; --muted:#4d6e56;
+  --accent:#1f8a3d; --on-accent:#ffffff; --hl:#c98600; --good:#1f8a3d;
+  --k1:#0f8f82; --k2:#5b63d6; --k3:#1f8a3d; --k4:#d9720d; --k5:#d6335a; --k6:#6a9a0a; --k7:#6b8a73; --k8:#2f9a78; --k9:#1a8580;
+  --viz:#ffffff; --edge:#b0cdb5; --sink:#12301b; --smute:#4d6e56; --shd:rgba(20,80,40,.16);
+}
+[data-palette="ember"]{
+  --bg:#1c1512; --bg2:#261c17; --card:#2b211b; --card2:#372a22; --line:#54402f; --ink:#fbf1e8; --muted:#c4aa96;
+  --accent:#ffb454; --on-accent:#241405; --hl:#ffd166; --good:#8fd6a0;
+  --k1:#5ec8d8; --k2:#a495ee; --k3:#8fd6a0; --k4:#ffb454; --k5:#ff7f8a; --k6:#d6e86a; --k7:#a8917f; --k8:#c3a0e8; --k9:#6fb8b0;
+  --viz:#140e0b; --edge:#6b5240; --sink:#fbf1e8; --smute:#d2bba8; --shd:rgba(0,0,0,.4);
+}
+[data-palette="ember"][data-theme="light"]{
+  --bg:#fbf4ec; --bg2:#f4e8db; --card:#ffffff; --card2:#faf0e4; --line:#e2cdb5; --ink:#34200f; --muted:#7a5f49;
+  --accent:#c9650a; --on-accent:#ffffff; --hl:#b87400; --good:#2e9a55;
+  --k1:#0e8ea0; --k2:#7a5ad6; --k3:#2e9a55; --k4:#c9650a; --k5:#d6335a; --k6:#7a9a0a; --k7:#8f7560; --k8:#9a62c8; --k9:#1a8580;
+  --viz:#ffffff; --edge:#d2b99f; --sink:#34200f; --smute:#7a5f49; --shd:rgba(120,70,20,.16);
+}
+[data-palette="dusk"]{
+  --bg:#1a1620; --bg2:#221d2a; --card:#272130; --card2:#322a3e; --line:#4a3f5c; --ink:#f3eef8; --muted:#b8abc7;
+  --accent:#c9a7e8; --on-accent:#1c1026; --hl:#ffd3a0; --good:#8fdcb8;
+  --k1:#7fd0de; --k2:#a9a6f2; --k3:#8fdcb8; --k4:#f3b074; --k5:#f08fb0; --k6:#cfe38a; --k7:#a093b3; --k8:#b7a3ec; --k9:#79b8c4;
+  --viz:#120f17; --edge:#5b4d72; --sink:#f3eef8; --smute:#c4b8d3; --shd:rgba(0,0,0,.4);
+}
+[data-palette="dusk"][data-theme="light"]{
+  --bg:#f8f3fc; --bg2:#efe6f7; --card:#ffffff; --card2:#f4ecfa; --line:#d9c8e8; --ink:#2a1c3a; --muted:#6c5a82;
+  --accent:#8a4fc9; --on-accent:#ffffff; --hl:#c07a1a; --good:#1c9a6e;
+  --k1:#0e8ea0; --k2:#6a5ad6; --k3:#1c9a6e; --k4:#d9720d; --k5:#c9306a; --k6:#6a9a0a; --k7:#81709a; --k8:#7a62c8; --k9:#1a8590;
+  --viz:#ffffff; --edge:#c9b6de; --sink:#2a1c3a; --smute:#6c5a82; --shd:rgba(80,40,120,.16);
+}
+
+/* ---------- base ---------- */
+:root{ --radius:18px; --shadow:0 5px 0 var(--shd); --font:ui-rounded,"SF Pro Rounded","Nunito","Segoe UI",system-ui,"PingFang SC","Hiragino Sans GB","Microsoft YaHei","Noto Sans CJK SC",sans-serif;
+  --kai:"Kaiti SC","STKaiti","KaiTi","BiauKai","Songti SC","PingFang SC","Noto Serif CJK SC",serif; }
+*{box-sizing:border-box}
+html,body{height:100%}
+body{margin:0;font-family:var(--font);background:radial-gradient(1200px 600px at 85% -10%,var(--bg2),var(--bg));color:var(--ink);line-height:1.45;
+  height:100dvh;display:flex;flex-direction:column;overflow:hidden}
+h1,h2,h3,p{margin:0}
+:focus-visible{outline:3px solid var(--hl);outline-offset:3px;border-radius:10px}
+button{font:inherit;color:inherit}
+
+/* ---------- header ---------- */
+.top{flex:none;display:flex;align-items:center;gap:16px;padding:10px 16px;border-bottom:2px solid var(--line);background:color-mix(in srgb,var(--bg) 85%,transparent)}
+.brand{display:flex;flex-direction:column;min-width:0}
+h1{font-size:clamp(1.25rem,2.6vw,1.8rem);font-weight:900;letter-spacing:-.02em;line-height:1.05;white-space:nowrap;
+  background:linear-gradient(90deg,var(--accent),var(--k5) 55%,var(--k1));-webkit-background-clip:text;background-clip:text;color:transparent}
+.tagline{font-size:.82rem;font-weight:800;color:var(--muted);white-space:nowrap}
+.tagline b{color:var(--good)}
+.tabs{display:flex;gap:6px;margin-left:auto;overflow-x:auto;padding:4px 2px}
+.tab{cursor:pointer;font-weight:900;font-size:.9rem;padding:8px 14px;border-radius:999px;border:2px solid var(--line);background:var(--card);white-space:nowrap}
+.tab[aria-selected="true"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);box-shadow:0 3px 0 var(--shd)}
+.iconbtn{cursor:pointer;border:2px solid var(--line);background:var(--card);border-radius:12px;padding:6px 11px;font-weight:900}
+@media(max-width:760px){.tagline{display:none}.top{gap:8px;flex-wrap:wrap}.tabs{order:3;width:100%;margin-left:0}}
+
+/* ---------- stage area ---------- */
+main{flex:1;min-height:0;position:relative}
+.view{position:absolute;inset:0;display:grid;grid-template-columns:minmax(0,1fr) 300px;gap:12px;padding:12px 16px 14px}
+.view[hidden]{display:none}
+.view.plain{display:block;overflow:auto}
+.view.plain[hidden]{display:none}
+.viz{min-height:0;min-width:0;display:flex;align-items:center;background:var(--viz);border:2px solid var(--line);border-radius:var(--radius);padding:8px;overflow:auto}
+.viz svg{display:block;width:100%;height:100%;min-width:760px;max-height:100%}
+.side{min-height:0;overflow:auto;display:flex;flex-direction:column;gap:10px}
+@media(max-width:1000px){.view{grid-template-columns:1fr;grid-template-rows:minmax(0,1fr) auto}.side{max-height:46vh}}
+
+.story{flex:none;border-radius:16px;padding:12px 16px;background:var(--card2);border:2px solid var(--accent);box-shadow:var(--shadow)}
+.story .n{font-size:.72rem;font-weight:900;letter-spacing:.09em;color:var(--accent);text-transform:uppercase}
+.story .h{font-size:clamp(1.25rem,2.4vw,1.65rem);font-weight:900;line-height:1.1;margin:2px 0 4px}
+.story .t{font-size:.95rem}
+.dots{display:flex;gap:6px;flex-wrap:wrap}
+.dot{cursor:pointer;width:34px;height:34px;border-radius:50%;font-weight:900;border:2px solid var(--line);background:var(--card)}
+.dot[aria-current="step"]{background:var(--accent);border-color:var(--accent);color:var(--on-accent);transform:scale(1.12)}
+.dot.seen{border-color:var(--good)}
+.ctrl{display:flex;gap:8px;flex-wrap:wrap}
+.btn{cursor:pointer;font-weight:800;border:0;border-radius:14px;padding:9px 16px;color:var(--on-accent);background:var(--accent);box-shadow:0 4px 0 var(--shd);transition:transform .08s,box-shadow .08s,filter .15s}
+.btn:hover{filter:brightness(1.08)} .btn:active{transform:translateY(3px);box-shadow:0 1px 0 var(--shd)}
+.btn.ghost{background:var(--card2);color:var(--ink);border:2px solid var(--line)}
+.persona{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.85rem}
+.persona[hidden]{display:none}
+.f{cursor:pointer;font-weight:800;border:2px solid var(--line);background:var(--card2);border-radius:999px;padding:5px 12px;font-size:.85rem}
+.f[aria-pressed="true"]{background:var(--c,var(--accent));border-color:var(--c,var(--accent));color:var(--on-accent)}
+
+.detail{flex:none;border-radius:16px;padding:12px 16px;border:2px solid var(--line);background:var(--card2);border-left:10px solid var(--c,var(--accent))}
+.detail h3{font-size:1.2rem}
+.detail .layer{font-size:.7rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+.detail dl{margin:6px 0 0;display:grid;grid-template-columns:auto 1fr;gap:3px 12px;font-size:.92rem}
+.detail dt{font-weight:900;color:var(--muted)} .detail dd{margin:0}
+.detail .next{margin-top:8px;display:flex;gap:6px;flex-wrap:wrap}
+.detail .hintp{font-size:.92rem;color:var(--muted)}
+
+/* ---------- SVG diagram ---------- */
+.dg .node{cursor:pointer;transition:opacity .25s}
+.dg .node rect.body{transition:filter .2s,stroke-width .2s}
+.dg .node:hover rect.body{filter:brightness(1.3);stroke-width:5.5}
+.dg .node.sel rect.body{stroke-width:6;filter:brightness(1.35) drop-shadow(0 0 12px var(--glow))}
+.dg .node.lit rect.body{filter:brightness(1.3) drop-shadow(0 0 10px var(--glow))}
+.dg .node.dim{opacity:.2}
+.dg .node text{pointer-events:none;font-family:var(--font)}
+.dg .node .t1{fill:var(--sink);font-weight:900}
+.dg .node .t2{fill:var(--smute);font-weight:600}
+.dg .node .gl{fill:var(--sink);font-family:var(--kai);font-weight:700}
+.dg .node:focus-visible{outline:none}
+.dg .node:focus-visible rect.body{stroke:var(--sink);stroke-width:6}
+.dg .eg path.ln{fill:none;stroke:var(--edge);stroke-width:3;opacity:.7;transition:.25s}
+.dg .eg path.ah{fill:none;stroke:var(--edge);stroke-width:3;opacity:.8}
+.dg .eg.on path.ln,.dg .eg.on path.ah{stroke:var(--hl);stroke-width:5;opacity:1}
+.dg .eg.dim{opacity:.15}
+.dg .eg .pt{fill:var(--hl);opacity:0}
+.dg .eg.on .pt{opacity:1}
+.dg .tick{stroke:var(--edge);stroke-width:2;stroke-dasharray:4 5;opacity:.7}
+.dg .zone{stroke-width:3;stroke-dasharray:10 7;fill-opacity:.07}
+.dg .zl{font-family:var(--font);font-weight:900;font-size:17px;fill:var(--hl)}
+.dg .zs{font-family:var(--font);font-weight:700;font-size:12.5px;fill:var(--smute)}
+.dg .hd text{font-family:var(--font);font-weight:900;font-size:14px;fill:var(--sink);letter-spacing:.06em}
+.dg .hd circle{fill:var(--hl)}
+.dg .hd .num{fill:var(--viz);font-size:13px;letter-spacing:0}
+
+/* ---------- catalog view ---------- */
+.cols{display:grid;grid-template-columns:repeat(var(--n,7),minmax(130px,1fr));gap:10px;height:calc(100% - 34px);min-height:420px}
+.col{background:var(--card);border:2px solid var(--line);border-top:8px solid var(--c);border-radius:16px;padding:10px;display:flex;flex-direction:column;gap:7px;box-shadow:var(--shadow)}
+.col h3{font-size:.85rem;font-weight:900;letter-spacing:.06em;text-transform:uppercase;color:var(--c)}
+.col .e{font-size:2rem}
+.chipb{cursor:pointer;text-align:left;font-weight:800;font-size:.95rem;padding:11px 12px;border-radius:12px;border:2px solid var(--line);background:var(--card2);transition:transform .12s,border-color .12s}
+.chipb:hover{transform:translateX(3px);border-color:var(--c)}
+.chipb .cn{display:block;font-family:var(--kai);font-size:1.15rem;line-height:1.25}
+.chipb small{display:block;font-weight:600;color:var(--muted);font-size:.78rem;margin-top:2px}
+.catnote{font-size:.8rem;color:var(--muted);margin-top:10px}
+@media(max-width:1000px){.cols{grid-template-columns:repeat(2,1fr);height:auto}}
+
+/* ---------- trace view ---------- */
+.tracebox{justify-content:center;background:var(--card);padding:12px}
+.tracebox canvas{display:block;width:auto;height:auto;max-width:100%;max-height:100%;border-radius:14px;touch-action:none;cursor:crosshair;box-shadow:var(--shadow)}
+.stars{font-size:1.5rem;letter-spacing:.15em;min-height:2rem}
+.items{display:flex;flex-wrap:wrap;gap:6px}
+
+/* ---------- ideas view ---------- */
+.ideas{display:grid;grid-template-columns:repeat(2,1fr);gap:14px;height:100%}
+.idea{position:relative;border-radius:var(--radius);padding:18px 20px;background:var(--card);border:2px solid var(--line);border-left:12px solid var(--c);box-shadow:var(--shadow);display:flex;flex-direction:column;gap:6px;overflow:hidden}
+.idea .no{position:absolute;right:14px;top:-4px;font-size:5.5rem;font-weight:900;color:var(--c);opacity:.18;line-height:1}
+.idea .em{font-size:2.2rem}
+.idea h2{font-size:clamp(1.2rem,2.4vw,1.7rem);font-weight:900;line-height:1.1}
+.idea p{font-size:1rem;color:var(--muted);flex:1}
+.idea .btn{align-self:flex-start}
+@media(max-width:760px){.ideas{grid-template-columns:1fr;height:auto}}
+
+/* ---------- dialogs ---------- */
+dialog{border:3px solid var(--accent);border-radius:22px;background:var(--card);color:var(--ink);padding:22px 24px;max-width:min(520px,92vw);box-shadow:0 14px 0 var(--shd)}
+dialog::backdrop{background:rgba(8,8,12,.7);backdrop-filter:blur(4px)}
+dialog[open]{animation:pop .25s}
+dialog h2{font-size:1.5rem;margin:2px 0 6px}
+dialog .layer{font-size:.72rem;font-weight:900;letter-spacing:.08em;text-transform:uppercase;color:var(--c)}
+dialog p{margin:6px 0}
+dialog a{color:var(--accent)}
+dialog li{margin:5px 0;font-size:.92rem}
+dialog .x{float:right}
+.swatches{display:grid;gap:8px;margin-top:10px}
+.sw{cursor:pointer;display:flex;align-items:center;gap:12px;text-align:left;padding:10px 12px;border-radius:14px;border:2px solid var(--line);background:var(--card2)}
+.sw[aria-pressed="true"]{border-color:var(--accent)}
+.sw .chips{display:flex}
+.sw .chips i{width:18px;height:28px;display:block}
+.sw .chips i:first-child{border-radius:8px 0 0 8px}.sw .chips i:last-child{border-radius:0 8px 8px 0}
+.sw small{display:block;color:var(--muted);font-weight:600}
+
+@keyframes pop{0%{transform:scale(.94)}60%{transform:scale(1.03)}100%{transform:scale(1)}}
+@media(prefers-reduced-motion:reduce){*{animation:none!important;transition:none!important}}
+
+</style>
+</head>
+<body>
+
+<header class="top">
+  <div class="brand">
+    <h1 id="title"></h1>
+    <span class="tagline" id="tagline"></span>
+  </div>
+  <div class="tabs" id="tabs" role="tablist" aria-label="Views"></div>
+  <button class="iconbtn" id="palBtn" aria-label="Choose colour palette">🎨</button>
+  <button class="iconbtn" id="srcBtn" aria-label="Sources and notes">ⓘ</button>
+  <button class="iconbtn" id="theme" aria-label="Switch light or dark mode">◐</button>
+</header>
+
+<main id="stage"></main>
+
+<dialog id="pop" aria-labelledby="popT">
+  <button class="btn ghost x" id="popX" aria-label="Close">✕</button>
+  <span class="layer" id="popL"></span>
+  <h2 id="popT"></h2>
+  <p id="popP" style="font-size:1.15rem;font-weight:800;color:var(--accent)" hidden></p>
+  <p id="popA" style="font-size:1.05rem;font-weight:700"></p>
+  <p id="popB" style="color:var(--muted)"></p>
+  <button class="btn" id="popSay" hidden style="margin-top:8px">🔊 Listen</button>
+</dialog>
+
+<dialog id="srcDlg" aria-labelledby="srcT">
+  <button class="btn ghost x" id="srcX" aria-label="Close">✕</button>
+  <h2 id="srcT">Sources and notes</h2>
+  <ul id="srcList" style="padding-left:1.1rem;margin:8px 0"></ul>
+  <p style="font-size:.88rem;color:var(--muted)"><b>Made with:</b> plain HTML, CSS, JavaScript and inline SVG. No external libraries. No data leaves this page.</p>
+</dialog>
+
+<dialog id="palDlg" aria-labelledby="palT">
+  <button class="btn ghost x" id="palX" aria-label="Close">✕</button>
+  <h2 id="palT">Colour palette</h2>
+  <div class="swatches" id="swatches"></div>
+</dialog>
+
+<!-- Page content. Edit this JSON, or rebuild with: node scripts/build.mjs <this-file.html> <this-file.html> -->
+<script type="application/json" id="content">
+{
+ "meta": {
+  "title": "How Databricks works",
+  "tagline": "Data **comes in** → gets **ready** → gets **used**",
+  "palette": "graphite",
+  "sources": [
+   {
+    "label": "Databricks docs: introduction",
+    "url": "https://docs.databricks.com/aws/en/introduction/",
+    "note": "component list (retrieved Oct 2026)"
+   },
+   {
+    "label": "Introducing Databricks Lakeflow",
+    "url": "https://www.databricks.com/blog/introducing-databricks-lakeflow",
+    "note": "Connect, Pipelines, Jobs"
+   },
+   {
+    "label": "Databricks Apps and Lakebase",
+    "url": "https://www.databricks.com/blog/how-build-production-ready-data-and-ai-apps-databricks-apps-and-lakebase",
+    "note": "app and OLTP pattern"
+   }
+  ],
+  "notes": [
+   "Control plane, compute plane and Model Serving are general knowledge. They were not checked in this session. Verify before you rely on them.",
+   "Product names change often. Mosaic AI is now Agent Bricks. Asset bundles are now Declarative Automation Bundles."
+  ]
+ },
+ "views": [
+  {
+   "id": "journey",
+   "type": "diagram",
+   "tab": "Data journey",
+   "icon": "🗺",
+   "label": "Databricks data journey map. Each block is a button.",
+   "intro": "Press Play. Gold dots show data moving through the platform. Or tap any block.",
+   "grid": {
+    "w": 1100,
+    "h": 500,
+    "pad": 20,
+    "gx": 50,
+    "gy": 12,
+    "cols": [
+     12,
+     19,
+     19,
+     15,
+     21
+    ],
+    "rows": [
+     5,
+     3,
+     7,
+     7,
+     7,
+     7,
+     5.5,
+     6
+    ]
+   },
+   "people": [
+    {
+     "id": "eng",
+     "name": "Data engineer",
+     "color": "k1"
+    },
+    {
+     "id": "ana",
+     "name": "Analyst",
+     "color": "k4"
+    },
+    {
+     "id": "sci",
+     "name": "Data scientist",
+     "color": "k5"
+    },
+    {
+     "id": "dev",
+     "name": "App developer",
+     "color": "k6"
+    }
+   ],
+   "heads": [
+    {
+     "col": 0,
+     "row": 1,
+     "text": "SOURCES"
+    },
+    {
+     "col": 1,
+     "row": 1,
+     "num": "1",
+     "text": "INGEST"
+    },
+    {
+     "col": 2,
+     "row": 1,
+     "num": "2",
+     "text": "TRANSFORM"
+    },
+    {
+     "col": 3,
+     "row": 1,
+     "num": "3",
+     "text": "STORE"
+    },
+    {
+     "col": 4,
+     "row": 1,
+     "num": "4",
+     "text": "ANALYZE · 5 BUILD"
+    }
+   ],
+   "nodes": [
+    {
+     "id": "src",
+     "kind": "tall",
+     "col": 0,
+     "row": 2,
+     "rs": 4,
+     "color": "k7",
+     "icon": "🏢",
+     "title": "Sources",
+     "lines": [
+      "apps · DBs",
+      "files · streams"
+     ],
+     "layer": "Outside Databricks",
+     "does": "Business systems that make raw data: shop apps, databases, files and event streams.",
+     "example": "A shop's sales system and website logs.",
+     "who": []
+    },
+    {
+     "id": "connect",
+     "col": 1,
+     "row": 2,
+     "rs": 1.8,
+     "color": "k1",
+     "icon": "🔌",
+     "title": "Lakeflow Connect",
+     "sub": "Pull from apps and DBs",
+     "layer": "Ingest",
+     "does": "Brings data in from business systems. It loads only new changes, so it stays fresh and cheap.",
+     "example": "Copy new orders from a sales app every few minutes.",
+     "who": [
+      "eng"
+     ]
+    },
+    {
+     "id": "auto",
+     "col": 1,
+     "row": 4.2,
+     "rs": 1.8,
+     "color": "k1",
+     "icon": "📥",
+     "title": "Auto Loader",
+     "sub": "New files, one by one",
+     "layer": "Ingest",
+     "does": "Watches cloud storage. It finds each new file and loads it once.",
+     "example": "A partner drops a CSV each night. Auto Loader loads it.",
+     "who": [
+      "eng"
+     ]
+    },
+    {
+     "id": "pipe",
+     "col": 2,
+     "row": 2,
+     "rs": 1.8,
+     "color": "k2",
+     "icon": "⚙️",
+     "title": "Lakeflow Pipelines",
+     "sub": "Clean and shape data",
+     "layer": "Transform",
+     "does": "You state the result you want in SQL or Python. Databricks runs, scales and retries the work.",
+     "example": "Turn raw orders into a clean daily-sales table.",
+     "who": [
+      "eng"
+     ]
+    },
+    {
+     "id": "spark",
+     "col": 2,
+     "row": 4.2,
+     "rs": 1.8,
+     "color": "k2",
+     "icon": "🔥",
+     "title": "Spark",
+     "sub": "Notebooks and code",
+     "layer": "Transform",
+     "does": "Open source engine plus notebooks. Use it for custom code and exploration.",
+     "example": "Test a new sales-metric rule in a notebook.",
+     "who": [
+      "eng",
+      "sci"
+     ]
+    },
+    {
+     "id": "lake",
+     "kind": "tall",
+     "col": 3,
+     "row": 2,
+     "rs": 4,
+     "color": "k3",
+     "icon": "🧱",
+     "title": "Lakehouse",
+     "lines": [
+      "Delta tables",
+      "open files"
+     ],
+     "layer": "Store",
+     "does": "One home for all data. Delta Lake adds reliable tables on top of files in your cloud storage.",
+     "example": "The clean daily-sales table everyone reads.",
+     "who": [
+      "eng",
+      "ana",
+      "sci",
+      "dev"
+     ]
+    },
+    {
+     "id": "sql",
+     "col": 4,
+     "row": 2,
+     "color": "k4",
+     "icon": "📊",
+     "title": "SQL and AI/BI",
+     "sub": "Fast SQL + dashboards",
+     "layer": "Analyze",
+     "does": "SQL warehouses run queries fast. AI/BI dashboards turn results into charts.",
+     "example": "A sales dashboard for the shop manager.",
+     "who": [
+      "ana"
+     ]
+    },
+    {
+     "id": "genie",
+     "col": 4,
+     "row": 3,
+     "color": "k4",
+     "icon": "🧞",
+     "title": "Genie",
+     "sub": "Ask in plain words",
+     "layer": "Analyze",
+     "does": "A data chat assistant. You ask in words and it writes the query.",
+     "example": "“Which product sold most last week?”",
+     "who": [
+      "ana"
+     ]
+    },
+    {
+     "id": "ai",
+     "col": 4,
+     "row": 4,
+     "color": "k5",
+     "icon": "🤖",
+     "title": "Agent Bricks",
+     "sub": "AI agents and MLflow",
+     "layer": "AI and ML",
+     "does": "Build, track and serve models and AI agents that use your governed data.",
+     "example": "A model that predicts next week's sales.",
+     "who": [
+      "sci"
+     ]
+    },
+    {
+     "id": "app",
+     "col": 4,
+     "row": 5,
+     "color": "k6",
+     "icon": "📱",
+     "title": "Apps + Lakebase",
+     "sub": "Web apps + Postgres",
+     "layer": "Apps and databases",
+     "does": "Databricks Apps hosts your app. Lakebase is managed Postgres for fast app reads and writes.",
+     "example": "A stock-order app that staff use all day.",
+     "who": [
+      "dev"
+     ]
+    },
+    {
+     "id": "uc",
+     "kind": "band",
+     "col": 1,
+     "row": 0,
+     "cs": 4,
+     "color": "hl",
+     "icon": "🛡️",
+     "title": "Unity Catalog",
+     "sub": "Access · lineage · audit — governs every block below",
+     "layer": "Governance",
+     "does": "One place for access rules, lineage and discovery. It covers tables, files, models and more.",
+     "example": "Only the finance team sees the salary column.",
+     "who": [
+      "eng",
+      "ana",
+      "sci",
+      "dev"
+     ]
+    },
+    {
+     "id": "jobs",
+     "kind": "band",
+     "col": 1,
+     "row": 6,
+     "cs": 2,
+     "color": "k8",
+     "icon": "⏰",
+     "title": "Lakeflow Jobs",
+     "sub": "runs every step on schedule",
+     "layer": "Orchestration",
+     "does": "Schedules and runs notebooks, pipelines, SQL and more. It handles order, retries and alerts.",
+     "example": "Run the daily-sales pipeline at 02:00. Email on failure.",
+     "who": [
+      "eng"
+     ]
+    },
+    {
+     "id": "cloud",
+     "kind": "band",
+     "col": 0,
+     "row": 7,
+     "cs": 5,
+     "color": "k9",
+     "icon": "🗄️",
+     "title": "Your cloud storage",
+     "sub": "S3 · ADLS · GCS — the data stays here, in open formats",
+     "layer": "Foundation",
+     "does": "Your data files live in storage you own. Databricks reads and writes them. It does not take ownership.",
+     "example": "Parquet and Delta files in your own bucket.",
+     "who": [
+      "eng"
+     ]
+    }
+   ],
+   "edges": [
+    [
+     "src",
+     "connect"
+    ],
+    [
+     "src",
+     "auto"
+    ],
+    [
+     "connect",
+     "pipe"
+    ],
+    [
+     "auto",
+     "pipe"
+    ],
+    [
+     "auto",
+     "spark"
+    ],
+    [
+     "pipe",
+     "lake"
+    ],
+    [
+     "spark",
+     "lake"
+    ],
+    [
+     "lake",
+     "sql"
+    ],
+    [
+     "lake",
+     "genie"
+    ],
+    [
+     "lake",
+     "ai"
+    ],
+    [
+     "lake",
+     "app"
+    ]
+   ],
+   "ticks": [
+    [
+     "uc",
+     "connect"
+    ],
+    [
+     "uc",
+     "pipe"
+    ],
+    [
+     "uc",
+     "lake"
+    ],
+    [
+     "uc",
+     "sql"
+    ],
+    [
+     "jobs",
+     "spark"
+    ],
+    [
+     "jobs",
+     "auto"
+    ],
+    [
+     "lake",
+     "cloud"
+    ]
+   ],
+   "stages": [
+    {
+     "name": "Ingest",
+     "headline": "Data walks in.",
+     "text": "Sources make raw data. Lakeflow Connect pulls it from business apps. Auto Loader picks up new files.",
+     "nodes": [
+      "src",
+      "connect",
+      "auto"
+     ]
+    },
+    {
+     "name": "Transform",
+     "headline": "Messy becomes clean.",
+     "text": "Lakeflow Pipelines turn raw data into trusted tables. You state the goal. Databricks does the work.",
+     "nodes": [
+      "connect",
+      "auto",
+      "pipe",
+      "spark"
+     ]
+    },
+    {
+     "name": "Store",
+     "headline": "One home for all data.",
+     "text": "Clean data lands in Delta tables in the lakehouse. The files stay in your own cloud storage.",
+     "nodes": [
+      "pipe",
+      "spark",
+      "lake",
+      "cloud"
+     ]
+    },
+    {
+     "name": "Analyze",
+     "headline": "Ask and see.",
+     "text": "Analysts use SQL warehouses and dashboards. Or they ask Genie in plain words.",
+     "nodes": [
+      "lake",
+      "sql",
+      "genie"
+     ]
+    },
+    {
+     "name": "Build",
+     "headline": "Put the data to work.",
+     "text": "Data scientists build models and agents. Developers ship apps with Lakebase and Databricks Apps.",
+     "nodes": [
+      "lake",
+      "ai",
+      "app"
+     ]
+    },
+    {
+     "name": "Govern and run",
+     "headline": "The rules and the clock.",
+     "text": "Unity Catalog controls who sees what and tracks lineage. Lakeflow Jobs runs every step on schedule.",
+     "nodes": [
+      "uc",
+      "jobs"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "plane",
+   "type": "diagram",
+   "tab": "Where it runs",
+   "icon": "🏗",
+   "label": "Control plane and compute plane. Each block is a button.",
+   "intro": "Press Play to follow one query from your click to the answer.",
+   "grid": {
+    "w": 1100,
+    "h": 500,
+    "pad": 20,
+    "gx": 20,
+    "gy": 14,
+    "cols": [
+     1,
+     1,
+     0.35,
+     1,
+     1
+    ],
+    "rows": [
+     0.6,
+     0.8,
+     1,
+     1,
+     1.2,
+     0.2
+    ]
+   },
+   "zones": [
+    {
+     "col": 0,
+     "row": 1,
+     "cs": 2,
+     "rs": 5,
+     "color": "k2",
+     "title": "🧠 CONTROL PLANE",
+     "sub": "The brain. Run by Databricks.",
+     "align": "end"
+    },
+    {
+     "col": 3,
+     "row": 1,
+     "cs": 2,
+     "rs": 5,
+     "color": "k3",
+     "title": "💪 COMPUTE PLANE",
+     "sub": "The muscle. Serverless, or in your cloud account."
+    }
+   ],
+   "nodes": [
+    {
+     "id": "you",
+     "kind": "band",
+     "col": 0,
+     "row": 0,
+     "cs": 5,
+     "color": "k7",
+     "icon": "🙋",
+     "title": "You",
+     "sub": "in a browser, an app, or a BI tool",
+     "layer": "Client",
+     "does": "You click Run, open a dashboard, or call an API.",
+     "example": "An analyst presses Run on a SQL query."
+    },
+    {
+     "id": "web",
+     "col": 0,
+     "row": 2,
+     "color": "k2",
+     "icon": "🌐",
+     "title": "Web app and API",
+     "sub": "The front door",
+     "layer": "Control plane",
+     "does": "Takes your request and checks who you are.",
+     "example": "You sign in and press Run."
+    },
+    {
+     "id": "sched",
+     "col": 1,
+     "row": 2,
+     "color": "k8",
+     "icon": "⏰",
+     "title": "Job scheduler",
+     "sub": "Plans and sends work",
+     "layer": "Control plane",
+     "does": "Decides what to run, where and when. It sends the work to the compute plane.",
+     "example": "“Run this query on warehouse A.”"
+    },
+    {
+     "id": "nb",
+     "col": 0,
+     "row": 3,
+     "color": "k1",
+     "icon": "📓",
+     "title": "Notebooks and code",
+     "sub": "Your saved work",
+     "layer": "Control plane",
+     "does": "Stores your notebooks, queries and settings.",
+     "example": "Your saved sales query."
+    },
+    {
+     "id": "ucm",
+     "col": 1,
+     "row": 3,
+     "color": "hl",
+     "icon": "🛡️",
+     "title": "Unity Catalog",
+     "sub": "Rules and metadata",
+     "layer": "Control plane",
+     "does": "Keeps the rules: who can see which table. It checks them before work starts.",
+     "example": "“Analysts may read sales, not salaries.”"
+    },
+    {
+     "id": "cluster",
+     "col": 3,
+     "row": 2,
+     "color": "k2",
+     "icon": "🔥",
+     "title": "Clusters (Spark)",
+     "sub": "Process big data",
+     "layer": "Compute plane",
+     "does": "Groups of machines that run Spark jobs, pipelines and notebooks.",
+     "example": "A nightly pipeline on 8 machines."
+    },
+    {
+     "id": "wh",
+     "col": 4,
+     "row": 2,
+     "color": "k4",
+     "icon": "📊",
+     "title": "SQL warehouses",
+     "sub": "Fast SQL answers",
+     "layer": "Compute plane",
+     "does": "Compute tuned for SQL, dashboards and BI tools.",
+     "example": "A dashboard query returns in seconds."
+    },
+    {
+     "id": "data",
+     "kind": "band",
+     "col": 3,
+     "row": 4,
+     "cs": 2,
+     "color": "k9",
+     "icon": "🗄️",
+     "title": "Your data in cloud storage",
+     "sub": "stays in storage you control",
+     "layer": "Your cloud account",
+     "does": "Compute reads your data where it lives. The data does not move into Databricks-owned storage.",
+     "example": "Delta tables in your own bucket."
+    }
+   ],
+   "edges": [
+    [
+     "you",
+     "web"
+    ],
+    [
+     "web",
+     "sched"
+    ],
+    [
+     "sched",
+     "cluster"
+    ],
+    [
+     "cluster",
+     "data"
+    ],
+    [
+     "wh",
+     "data"
+    ],
+    [
+     "wh",
+     "you"
+    ]
+   ],
+   "stages": [
+    {
+     "name": "Request",
+     "headline": "You click Run.",
+     "text": "Your request reaches the Databricks web app and API. Nothing heavy happens here.",
+     "nodes": [
+      "you",
+      "web"
+     ]
+    },
+    {
+     "name": "Plan",
+     "headline": "The brain decides.",
+     "text": "The scheduler plans the work. Unity Catalog checks that you may see the data.",
+     "nodes": [
+      "web",
+      "sched",
+      "ucm",
+      "nb"
+     ]
+    },
+    {
+     "name": "Dispatch",
+     "headline": "Work goes to the muscle.",
+     "text": "The control plane sends the job to compute. Compute can be serverless or in your cloud account.",
+     "nodes": [
+      "sched",
+      "cluster",
+      "wh"
+     ]
+    },
+    {
+     "name": "Read",
+     "headline": "Compute reads your data.",
+     "text": "Clusters and SQL warehouses read files in storage you control. The data stays where it is.",
+     "nodes": [
+      "cluster",
+      "wh",
+      "data"
+     ]
+    },
+    {
+     "name": "Answer",
+     "headline": "The result comes back.",
+     "text": "The answer returns to you as a table, a chart or an API response.",
+     "nodes": [
+      "wh",
+      "you"
+     ]
+    }
+   ]
+  },
+  {
+   "id": "services",
+   "type": "catalog",
+   "tab": "All services",
+   "icon": "🧩",
+   "note": "Tap any service for details. Databricks renames products often, so check current docs before you rely on a name.",
+   "layers": [
+    {
+     "id": "found",
+     "name": "Foundations",
+     "color": "k2",
+     "icon": "🏛"
+    },
+    {
+     "id": "data",
+     "name": "Data engineering",
+     "color": "k1",
+     "icon": "🔌"
+    },
+    {
+     "id": "gov",
+     "name": "Governance",
+     "color": "hl",
+     "icon": "🛡️"
+    },
+    {
+     "id": "bi",
+     "name": "Analytics and BI",
+     "color": "k4",
+     "icon": "📊"
+    },
+    {
+     "id": "ai",
+     "name": "AI and ML",
+     "color": "k5",
+     "icon": "🤖"
+    },
+    {
+     "id": "app",
+     "name": "Apps and databases",
+     "color": "k6",
+     "icon": "📱"
+    },
+    {
+     "id": "ops",
+     "name": "DevOps",
+     "color": "k8",
+     "icon": "🧰"
+    }
+   ],
+   "items": [
+    {
+     "layer": "found",
+     "name": "Data lakehouse",
+     "does": "One platform that keeps data in open files and adds warehouse features.",
+     "more": "Data lives in your cloud storage. Tables, security and SQL sit on top."
+    },
+    {
+     "layer": "found",
+     "name": "Delta Lake",
+     "does": "Open table format with reliable updates.",
+     "more": "Adds transactions to files. This is why a lakehouse can act like a database."
+    },
+    {
+     "layer": "found",
+     "name": "Apache Spark",
+     "does": "Engine for batch and streaming data work.",
+     "more": "Powers clusters and many Lakeflow workloads. Use Python, SQL, Scala or R."
+    },
+    {
+     "layer": "found",
+     "name": "MLflow",
+     "does": "Open source tool to track and manage ML work.",
+     "more": "Logs experiments, models and runs."
+    },
+    {
+     "layer": "data",
+     "name": "Lakeflow Connect",
+     "does": "Bring data in from business systems.",
+     "more": "Ingests changes step by step into Unity Catalog tables. Fewer custom scripts."
+    },
+    {
+     "layer": "data",
+     "name": "Auto Loader",
+     "does": "Load new files from cloud storage step by step.",
+     "more": "Finds new files as they arrive and loads each one once."
+    },
+    {
+     "layer": "data",
+     "name": "Lakeflow Pipelines",
+     "does": "Declare the result you want. Databricks runs the work.",
+     "more": "Built on the Delta Live Tables framework. You write SQL or Python logic."
+    },
+    {
+     "layer": "data",
+     "name": "Lakeflow Jobs",
+     "does": "Schedule and orchestrate work.",
+     "more": "Runs notebooks, SQL, pipelines and other tasks on a schedule or trigger."
+    },
+    {
+     "layer": "data",
+     "name": "Lakeflow Designer",
+     "does": "Build pipelines with little or no code.",
+     "more": "Announced in 2025. Check the docs for current availability."
+    },
+    {
+     "layer": "gov",
+     "name": "Unity Catalog",
+     "does": "One place for access rules, lineage and discovery.",
+     "more": "Covers tables, files (volumes), models and more, across workspaces."
+    },
+    {
+     "layer": "gov",
+     "name": "Lakehouse Federation",
+     "does": "Query outside databases under the same governance.",
+     "more": "Reach other databases without copying all data first."
+    },
+    {
+     "layer": "gov",
+     "name": "Data sharing",
+     "does": "Share data with people outside your account.",
+     "more": "Docs now list a managed sharing feature built on Delta Sharing."
+    },
+    {
+     "layer": "bi",
+     "name": "SQL warehouses",
+     "does": "Scalable compute for SQL queries.",
+     "more": "Serverless or classic. They power the SQL editor, dashboards and BI tools."
+    },
+    {
+     "layer": "bi",
+     "name": "Notebooks",
+     "does": "Code, text and charts in one page.",
+     "more": "Support Python, R, Scala and SQL."
+    },
+    {
+     "layer": "bi",
+     "name": "AI/BI dashboards",
+     "does": "Dashboards with AI-assisted authoring.",
+     "more": "Build charts from governed data without extra tools."
+    },
+    {
+     "layer": "bi",
+     "name": "Genie",
+     "does": "Ask questions about data in plain language.",
+     "more": "Tuned with your own business terms. Genie Code is a newer agent for coding tasks."
+    },
+    {
+     "layer": "bi",
+     "name": "Metric views",
+     "does": "Define a business KPI once. Use it everywhere.",
+     "more": "Keeps numbers the same across reports."
+    },
+    {
+     "layer": "ai",
+     "name": "Agent Bricks (Mosaic AI)",
+     "does": "Build and run AI agents on your data.",
+     "more": "Newer docs use the name Agent Bricks. Older pages say Mosaic AI."
+    },
+    {
+     "layer": "ai",
+     "name": "AI Functions",
+     "does": "Call an LLM from a SQL query.",
+     "more": "Lets analysts add AI steps to queries and pipelines."
+    },
+    {
+     "layer": "ai",
+     "name": "Model Serving",
+     "does": "Host models behind an API.",
+     "more": "General knowledge. Check current docs for supported model types."
+    },
+    {
+     "layer": "app",
+     "name": "Lakebase",
+     "does": "Managed Postgres for app data.",
+     "more": "Fast reads and writes (OLTP). Synced tables copy Unity Catalog data in."
+    },
+    {
+     "layer": "app",
+     "name": "Databricks Apps",
+     "does": "Host secure data and AI apps on the platform.",
+     "more": "No separate hosting. Apps use platform identity and data."
+    },
+    {
+     "layer": "ops",
+     "name": "Git folders",
+     "does": "Sync projects with Git providers.",
+     "more": "Work with branches and reviews as usual."
+    },
+    {
+     "layer": "ops",
+     "name": "Bundles",
+     "does": "Define jobs and pipelines as code.",
+     "more": "Docs call them Declarative Automation Bundles. Deploy the same setup to many places."
+    }
+   ]
+  },
+  {
+   "id": "ideas",
+   "type": "ideas",
+   "tab": "Key ideas",
+   "icon": "💡",
+   "cards": [
+    {
+     "icon": "🧱",
+     "title": "One platform, one lakehouse",
+     "text": "Data, SQL, AI and apps share the same governed tables. No copies between tools.",
+     "color": "k3",
+     "button": "See the lakehouse →",
+     "go": {
+      "view": "journey",
+      "node": "lake"
+     }
+    },
+    {
+     "icon": "🔌",
+     "title": "Lakeflow moves and shapes data",
+     "text": "Connect ingests. Pipelines transform. Jobs orchestrate. One toolset from source to table.",
+     "color": "k1",
+     "button": "Play the journey →",
+     "go": {
+      "view": "journey",
+      "stage": 0
+     }
+    },
+    {
+     "icon": "🛡️",
+     "title": "Unity Catalog governs everything",
+     "text": "One set of rules for tables, files and models. It also records lineage and audit.",
+     "color": "hl",
+     "button": "See Unity Catalog →",
+     "go": {
+      "view": "journey",
+      "node": "uc"
+     }
+    },
+    {
+     "icon": "🏗",
+     "title": "Your data stays yours",
+     "text": "Databricks runs the control plane. Compute runs next to your data in storage you control.",
+     "color": "k4",
+     "button": "See where it runs →",
+     "go": {
+      "view": "plane",
+      "stage": 3
+     }
+    }
+   ]
+  }
+ ]
+}
+</script>
+<script>
+/* ===== interactive-learning-html · engine =====
+   Reads the global CONTENT object. Builds tabs, views, dialogs.
+   View types: "diagram" | "catalog" | "ideas". No external libraries. */
+const CONTENT=JSON.parse(document.getElementById("content").textContent);
+(function(){
+  "use strict";
+  const $=(s,r=document)=>r.querySelector(s), $$=(s,r=document)=>[...r.querySelectorAll(s)];
+  const reduce=matchMedia("(prefers-reduced-motion: reduce)").matches;
+  const store={get(k){try{return localStorage.getItem(k)}catch(e){return null}},set(k,v){try{localStorage.setItem(k,v)}catch(e){}}};
+  const clamp=(v,a,b)=>Math.max(a,Math.min(b,v));
+  const tok=t=>"var(--"+(t||"accent")+")";
+  const el=(tag,cls,txt)=>{const e=document.createElement(tag);if(cls)e.className=cls;if(txt!=null)e.textContent=txt;return e;};
+  const bold=(parent,str)=>{ String(str).split("**").forEach((p,i)=>{ if(!p)return; if(i%2){const b=el("b",null,p);parent.appendChild(b);} else parent.appendChild(document.createTextNode(p)); }); };
+
+  /* speech (offline, browser voice). Hidden when the browser has none. */
+  const canSpeak="speechSynthesis" in window;
+  function speak(text,lang){
+    if(!canSpeak||!text) return;
+    speechSynthesis.cancel();
+    const u=new SpeechSynthesisUtterance(text); u.lang=lang||"en-US"; u.rate=.8;
+    const v=speechSynthesis.getVoices().find(v=>v.lang.replace("_","-").toLowerCase()===u.lang.toLowerCase()); if(v) u.voice=v;
+    speechSynthesis.speak(u);
+  }
+  const restyle=()=>window.dispatchEvent(new Event("anyhow-restyle"));
+  const PALETTES=[
+    {id:"graphite",name:"Graphite",hint:"Tech, software, data, engineering",c:["#15171c","#5aa9ff","#4ad8a6","#ffa94d","#ff7a93"]},
+    {id:"ocean",name:"Ocean",hint:"Science, maths, space, physics",c:["#0c1a2b","#46c1ff","#3fe0b5","#ffb454","#ff7f9c"]},
+    {id:"forest",name:"Forest",hint:"Nature, health, biology, sustainability",c:["#0f1a14","#7bd88f","#6fd3c4","#ffb15c","#f58aa0"]},
+    {id:"ember",name:"Ember",hint:"Business, finance, history, economics",c:["#1c1512","#ffb454","#8fd6a0","#5ec8d8","#ff7f8a"]},
+    {id:"dusk",name:"Dusk",hint:"Language, arts, culture, humanities",c:["#1a1620","#c9a7e8","#8fdcb8","#f3b074","#f08fb0"]}
+  ];
+  const D=CONTENT, root=document.documentElement;
+
+  /* ---------- shell ---------- */
+  if(!root.dataset.palette||!PALETTES.some(p=>p.id===root.dataset.palette)) root.dataset.palette="graphite";
+  const savedMode=store.get("anyhow-mode"); if(savedMode) root.dataset.theme=savedMode;
+  $("#title").textContent=D.meta.title; bold($("#tagline"),D.meta.tagline||"");
+  $("#theme").addEventListener("click",()=>{ const t=root.dataset.theme==="dark"?"light":"dark"; root.dataset.theme=t; store.set("anyhow-mode",t); restyle(); });
+
+  /* dialogs */
+  const SAYLANG=D.meta.speakLang||"en-US";
+  let popSay="";
+  function openPop(layer,color,title,pinyin,a,b,say){
+    $("#popL").textContent=layer; $("#popL").style.setProperty("--c",color); $("#popT").textContent=title;
+    $("#popP").textContent=pinyin||""; $("#popP").hidden=!pinyin;
+    $("#popA").textContent=a||""; $("#popB").textContent=b||"";
+    popSay=say||""; $("#popSay").hidden=!(canSpeak&&say); $("#pop").showModal();
+  }
+  $("#popSay").addEventListener("click",()=>speak(popSay,SAYLANG));
+  [["#popX","#pop"],["#srcX","#srcDlg"],["#palX","#palDlg"]].forEach(([b,d])=>$(b).addEventListener("click",()=>$(d).close()));
+  $$("dialog").forEach(d=>d.addEventListener("click",e=>{ if(e.target===d) d.close(); }));
+  $("#srcBtn").addEventListener("click",()=>$("#srcDlg").showModal());
+  $("#palBtn").addEventListener("click",()=>$("#palDlg").showModal());
+  const sl=$("#srcList");
+  (D.meta.sources||[]).forEach(s=>{ const li=el("li"); if(s.url){ const a=el("a",null,s.label); a.href=s.url; a.target="_blank"; a.rel="noopener"; li.appendChild(a); if(s.note) li.appendChild(document.createTextNode(" — "+s.note)); } else li.textContent=s.label+(s.note?" — "+s.note:""); sl.appendChild(li); });
+  (D.meta.notes||[]).forEach(n=>sl.appendChild(el("li",null,n)));
+  PALETTES.forEach(p=>{
+    const b=el("button","sw"); b.type="button"; b.setAttribute("aria-pressed",String(p.id===root.dataset.palette));
+    const ch=el("span","chips"); p.c.forEach(c=>{ const i=document.createElement("i"); i.style.background=c; ch.appendChild(i); }); b.appendChild(ch);
+    const tx=el("span"); tx.appendChild(el("b",null,p.name)); tx.appendChild(el("small",null,p.hint)); b.appendChild(tx);
+    b.addEventListener("click",()=>{ root.dataset.palette=p.id; $$(".sw").forEach(x=>x.setAttribute("aria-pressed",String(x===b))); restyle(); });
+    $("#swatches").appendChild(b);
+  });
+
+  /* ---------- generic diagram view ---------- */
+  const NS="http://www.w3.org/2000/svg";
+  const S=(tag,attrs,parent)=>{const e=document.createElementNS(NS,tag);for(const k in attrs)e.setAttribute(k,attrs[k]);if(parent)parent.appendChild(e);return e;};
+
+  function makeGrid(g){
+    const W=g.w||1100,H=g.h||500,pad=g.pad??20,gx=g.gx??40,gy=g.gy??18, cw=g.cols||[1], rh=g.rows||[1];
+    const uc=(W-2*pad-gx*(cw.length-1))/cw.reduce((a,b)=>a+b,0), ur=(H-2*pad-gy*(rh.length-1))/rh.reduce((a,b)=>a+b,0);
+    const pos=(arr,u,gap,p)=>{ const i=Math.floor(p),f=p-i; let s=0; for(let k=0;k<i&&k<arr.length;k++) s+=arr[k]*u+gap; return pad+s+f*((arr[i]||0)*u+gap); };
+    const X=c=>pos(cw,uc,gx,c), Y=r=>pos(rh,ur,gy,r);
+    return { X, Y, place(o){ if(o.col==null) return o; const x=X(o.col),y=Y(o.row); o.x=x; o.y=y; o.w=X(o.col+(o.cs||1))-gx-x; o.h=Y(o.row+(o.rs||1))-gy-y; return o; },
+             rowMid(r){ return (Y(r)+Y(r+1)-gy)/2; } };
+  }
+
+  function diagramView(host,V,reg){
+    host.innerHTML='<div class="viz"><svg class="dg" viewBox="0 0 '+(V.grid.w||1100)+' '+(V.grid.h||500)+'" role="group"></svg></div>'+
+      '<aside class="side"><div class="story" aria-live="polite"><div class="n"></div><div class="h"></div><div class="t"></div></div>'+
+      '<div class="dots" role="group" aria-label="Stages"></div>'+
+      '<div class="ctrl"><button class="btn play">▶ Play</button><button class="btn ghost prev" aria-label="Previous stage">◀</button><button class="btn ghost next" aria-label="Next stage">▶</button><button class="btn ghost clr">Reset</button></div>'+
+      '<div class="persona" hidden role="group"><b>Who uses what?</b></div><div class="detail"></div></aside>';
+    const svg=$("svg",host), side=$(".side",host); svg.setAttribute("aria-label",V.label||V.tab);
+    const G=makeGrid(V.grid), byId={}, nodeEls={}, edgeEls=[], seen=new Set();
+    V.nodes.forEach(n=>{ G.place(n); byId[n.id]=n; });
+    let stage=-1,timer=null,persona=null,started=false;
+    const last=V.stages.length-1;
+
+    (V.zones||[]).forEach(z=>{
+      G.place(z); const c=tok(z.color||"k2");
+      S("rect",{class:"zone",x:z.x,y:z.y,width:z.w,height:z.h,rx:22,style:"stroke:"+c+";fill:"+c},svg);
+      const end=z.align==="end", tx=end?z.x+z.w-20:z.x+20;
+      S("text",{class:"zl",x:tx,y:z.y+30,"text-anchor":end?"end":"start"},svg).textContent=z.title;
+      if(z.sub) S("text",{class:"zs",x:tx,y:z.y+50,"text-anchor":end?"end":"start"},svg).textContent=z.sub;
+    });
+    (V.heads||[]).forEach(h=>{
+      const x=G.X(h.col), y=G.rowMid(h.row), g=S("g",{class:"hd"},svg);
+      if(h.num){ S("circle",{cx:x+11,cy:y,r:11},g); S("text",{class:"num",x:x+11,y:y+4.5,"text-anchor":"middle"},g).textContent=h.num; }
+      S("text",{x:x+(h.num?28:0),y:y+5},g).textContent=h.text;
+    });
+    const gTick=S("g",{},svg), gEdge=S("g",{},svg), gNode=S("g",{},svg);
+    const overlapX=(A,B)=>{ const lo=Math.max(A.x,B.x)+12,hi=Math.min(A.x+A.w,B.x+B.w)-12; return hi>lo?(lo+hi)/2:(A.x+A.w/2+B.x+B.w/2)/2; };
+    (V.ticks||[]).forEach(([a,b])=>{ let A=byId[a],B=byId[b]; if(A.y>B.y)[A,B]=[B,A]; const x=overlapX(A,B); S("line",{class:"tick",x1:x,y1:A.y+A.h,x2:x,y2:B.y},gTick); });
+
+    (V.edges||[]).forEach(([a,b],i)=>{
+      const A=byId[a],B=byId[b]; let x1,y1,x2,y2,ang=0,d;
+      if(A.x+A.w<=B.x+2){ x1=A.x+A.w;y1=A.y+A.h/2;x2=B.x;y2=B.y+B.h/2; const mx=(x1+x2)/2; d=`M${x1},${y1} C${mx},${y1} ${mx},${y2} ${x2},${y2}`; }
+      else if(B.y>=A.y+A.h){ const x=overlapX(A,B); x1=x2=x;y1=A.y+A.h;y2=B.y;ang=90; d=`M${x1},${y1} L${x2},${y2}`; }
+      else { const x=overlapX(A,B); x1=x2=x;y1=A.y;y2=B.y+B.h;ang=-90; d=`M${x1},${y1} L${x2},${y2}`; }
+      const g=S("g",{class:"eg"},gEdge), id=V.id+"-e"+i;
+      S("path",{class:"ln",id,d},g);
+      S("path",{class:"ah",d:"M-11,-8 L0,0 L-11,8",transform:`translate(${x2},${y2}) rotate(${ang})`},g);
+      const dot=S("circle",{class:"pt",r:6},g);
+      if(!reduce){ const am=S("animateMotion",{dur:"1.8s",repeatCount:"indefinite",begin:"-"+((i%3)*0.6)+"s"},dot); S("mpath",{href:"#"+id},am); }
+      else { dot.setAttribute("cx",ang===0?x2-16:x2); dot.setAttribute("cy",y2); }
+      edgeEls.push({g,a,b});
+    });
+
+    const fit=(t,txt,max,cw)=>{ if(txt.length*cw>max){ t.setAttribute("textLength",Math.max(40,max)); t.setAttribute("lengthAdjust","spacingAndGlyphs"); } };
+    V.nodes.forEach(n=>{
+      const c=tok(n.color||"k2"), kind=n.kind||"box";
+      const g=S("g",{class:"node",tabindex:0,role:"button","aria-label":(n.glyph?n.glyph+". ":"")+n.title+". "+(n.layer||"")+". Press Enter for details.",style:"--glow:"+c},gNode);
+      S("rect",{class:"body",x:n.x,y:n.y,width:n.w,height:n.h,rx:kind==="band"?14:18,"fill-opacity":.2,"stroke-width":3.5,style:"fill:"+c+";stroke:"+c},g);
+      const T=(txt,x,y,size,cls,anchor)=>{const t=S("text",{class:cls,x,y,"font-size":size,"text-anchor":anchor||"start"},g);t.textContent=txt;return t;};
+      if(kind==="tall"){
+        const cx=n.x+n.w/2, lines=n.lines||[], gs=n.glyph?(n.glyph.length>2?40:n.glyph.length>1?52:64):38;
+        const H=gs+10+22+lines.length*18, y0=n.y+n.h/2-H/2;
+        if(n.glyph) T(n.glyph,cx,y0+gs*0.86,gs,"gl","middle"); else T(n.icon||"",cx,y0+gs*0.86,gs,"t1","middle");
+        fit(T(n.title,cx,y0+gs+10+16,18,"t1","middle"),n.title,n.w-16,10.4);
+        lines.forEach((l,i)=>fit(T(l,cx,y0+gs+10+22+14+i*18,13,"t2","middle"),l,n.w-16,6.8));
+      } else if(kind==="band"){
+        T(n.icon||"",n.x+16,n.y+n.h/2+9,26,"t1");
+        if(n.h<50){ const tw=n.title.length*9.6; fit(T(n.title,n.x+54,n.y+n.h/2+6,16.5,"t1"),n.title,tw,9.6); if(n.sub) fit(T(n.sub,n.x+54+tw+14,n.y+n.h/2+5.5,13,"t2"),n.sub,n.w-54-tw-30,6.8); }
+        else { fit(T(n.title,n.x+54,n.y+n.h/2-1,16.5,"t1"),n.title,n.w-70,9.6); if(n.sub) fit(T(n.sub,n.x+54,n.y+n.h/2+17,13,"t2"),n.sub,n.w-70,6.8); }
+      } else {
+        let tx=n.x+50;
+        if(n.glyph){ const gs=n.glyph.length>2?22:n.glyph.length>1?27:32; T(n.glyph,n.x+14,n.y+n.h/2+gs*0.36,gs,"gl"); tx=n.x+14+n.glyph.length*gs*1.04+12; }
+        else T(n.icon||"",n.x+14,n.y+n.h/2+10,26,"t1");
+        fit(T(n.title,tx,n.y+n.h/2-3,16.5,"t1"),n.title,n.x+n.w-tx-10,9.6); if(n.sub) fit(T(n.sub,tx,n.y+n.h/2+17,13,"t2"),n.sub,n.x+n.w-tx-10,6.8);
+      }
+      g.addEventListener("click",()=>selectNode(n.id));
+      g.addEventListener("keydown",e=>{ if(e.key==="Enter"||e.key===" "){ e.preventDefault(); selectNode(n.id); } });
+      nodeEls[n.id]=g;
+    });
+
+    function applyFocus(ids,isOn,sel,lit){
+      const any=ids&&ids.size>0;
+      Object.entries(nodeEls).forEach(([id,g])=>{ g.classList.toggle("dim",any&&!ids.has(id)); g.classList.toggle("sel",id===sel); g.classList.toggle("lit",!!lit&&any&&ids.has(id)); });
+      edgeEls.forEach(e=>{ const on=isOn?isOn(e):false; e.g.classList.toggle("on",on); e.g.classList.toggle("dim",any&&!on); });
+    }
+    const setStory=(n,h,t)=>{ $(".story .n",side).textContent=n; $(".story .h",side).textContent=h; $(".story .t",side).textContent=t; };
+    function resetDetail(){ const d=$(".detail",side); d.style.setProperty("--c","var(--accent)"); d.innerHTML='<h3>Tap any block</h3><p class="hintp">See what it does, an example, and where data goes next.</p>'; }
+    function markDots(){ $$(".dot",side).forEach((b,i)=>{ if(i===stage)b.setAttribute("aria-current","step"); else b.removeAttribute("aria-current"); b.classList.toggle("seen",seen.has(i)&&i!==stage); }); }
+    function clearPersona(){ persona=null; $$(".persona .f",side).forEach(b=>b.setAttribute("aria-pressed","false")); }
+    const neighbors=id=>{ const s=new Set([id]); (V.edges||[]).forEach(([a,b])=>{ if(a===id)s.add(b); if(b===id)s.add(a); }); return s; };
+
+    function selectNode(id){
+      stopTour(); stage=-1; markDots(); clearPersona();
+      const n=byId[id], ids=neighbors(id);
+      if((n.kind||"box")==="band") V.nodes.forEach(x=>{ if(x.kind!=="band") ids.add(x.id); });
+      applyFocus(ids,e=>e.a===id||e.b===id,id,false);
+      const d=$(".detail",side); d.style.setProperty("--c",tok(n.color||"k2"));
+      const outs=(V.edges||[]).filter(e=>e[0]===id).map(e=>e[1]), ins=(V.edges||[]).filter(e=>e[1]===id).map(e=>e[0]);
+      const people=(n.who||[]).map(w=>(V.people.find(p=>p.id===w)||{}).name).filter(Boolean).join(", ");
+      d.innerHTML=""; d.appendChild(el("span","layer",n.layer||"")); d.appendChild(el("h3",null,(n.glyph||n.icon||"")+" "+n.title));
+      const dl=el("dl"); const row=(k,v)=>{ dl.appendChild(el("dt",null,k)); dl.appendChild(el("dd",null,v)); };
+      if(n.does) row("Does",n.does); if(n.example) row("Example",n.example); if(people) row("Used by",people); d.appendChild(dl);
+      const nx=el("div","next"); const mk=(l,i)=>{ const b=el("button","f",l+" "+byId[i].title); b.type="button"; b.addEventListener("click",()=>selectNode(i)); nx.appendChild(b); };
+      ins.forEach(i=>mk("←",i)); outs.forEach(o=>mk("→",o)); d.appendChild(nx);
+      const say=n.speak||(V.speak?n.glyph:""); if(canSpeak&&say){ const sb=el("button","btn ghost","🔊 Listen"); sb.type="button"; sb.style.marginTop="8px"; sb.addEventListener("click",()=>speak(say,SAYLANG)); d.appendChild(sb); }
+      setStory("Block",n.title,n.does||"");
+    }
+
+    if(V.people&&V.people.length){
+      const pb=$(".persona",side); pb.hidden=false; pb.setAttribute("aria-label","Show what a role uses");
+      V.people.forEach(p=>{
+        const b=el("button","f",p.name); b.type="button"; b.style.setProperty("--c",tok(p.color)); b.setAttribute("aria-pressed","false");
+        b.addEventListener("click",()=>{
+          stopTour(); stage=-1; markDots();
+          const on=persona!==p.id; clearPersona(); if(on){ persona=p.id; b.setAttribute("aria-pressed","true"); }
+          if(!on){ applyFocus(null,null,null); resetDetail(); setStory("Ready","Press Play",V.intro||""); return; }
+          const ids=new Set(V.nodes.filter(n=>(n.who||[]).includes(p.id)).map(n=>n.id));
+          applyFocus(ids,e=>ids.has(e.a)&&ids.has(e.b),null,true);
+          setStory("Role lens",p.name,"Lit blocks are the ones this role uses. "+[...ids].filter(i=>byId[i].kind!=="band").length+" blocks. Tap one to learn more.");
+        });
+        pb.appendChild(b);
+      });
+    }
+
+    V.stages.forEach((s,i)=>{ const b=el("button","dot",String(i+1)); b.type="button"; b.title=s.name; b.setAttribute("aria-label","Stage "+(i+1)+": "+s.name); b.addEventListener("click",()=>{ stopTour(); showStage(i); }); $(".dots",side).appendChild(b); });
+    function showStage(i){
+      stage=clamp(i,0,last); clearPersona();
+      const s=V.stages[stage], ids=new Set(s.nodes);
+      applyFocus(ids,e=>ids.has(e.a)&&ids.has(e.b),null,true);
+      setStory("Stage "+(stage+1)+" of "+V.stages.length+" · "+s.name,s.headline,s.text); seen.add(stage); markDots(); resetDetail();
+    }
+    const label=()=>$(".play",side).textContent=timer?"❚❚ Pause":(started&&stage>=last?"↻ Replay":"▶ Play");
+    function startTour(){ if(timer)return; started=true; if(stage<0||stage>=last) showStage(0); timer=setInterval(()=>{ if(stage>=last){ stopTour(); return; } showStage(stage+1); label(); },4300); label(); }
+    function stopTour(){ if(timer){ clearInterval(timer); timer=null; } label(); }
+    $(".play",side).addEventListener("click",()=>{ timer?stopTour():startTour(); });
+    $(".next",side).addEventListener("click",()=>{ stopTour(); showStage(stage<0?0:stage+1); });
+    $(".prev",side).addEventListener("click",()=>{ stopTour(); showStage(stage<0?last:stage-1); });
+    $(".clr",side).addEventListener("click",()=>{ stopTour(); stage=-1; started=false; clearPersona(); markDots(); applyFocus(null,null,null); resetDetail(); setStory("Ready","Press Play",V.intro||""); label(); });
+    setStory("Ready","Press Play",V.intro||""); resetDetail();
+    return { onShow(){ if(!started&&!reduce) startTour(); }, onHide(){ stopTour(); }, showStage:i=>{ stopTour(); showStage(i); }, selectNode };
+  }
+
+  /* ---------- catalog view ---------- */
+  function catalogView(host,V){
+    host.classList.add("plain");
+    const cols=el("div","cols"); cols.style.setProperty("--n",V.layers.length); host.appendChild(cols);
+    V.layers.forEach(L=>{
+      const c=tok(L.color), col=el("div","col"); col.style.setProperty("--c",c);
+      col.appendChild(el("span","e",L.icon||"")); col.appendChild(el("h3",null,L.name));
+      V.items.filter(i=>i.layer===L.id).forEach(i=>{ const b=el("button","chipb"); b.type="button"; b.appendChild(el("span","cn",i.name)); if(i.pinyin) b.appendChild(el("small",null,i.pinyin)); b.addEventListener("click",()=>openPop(L.name,c,i.name,i.pinyin,i.does,i.more,i.speak||(V.speak?i.name:""))); col.appendChild(b); });
+      cols.appendChild(col);
+    });
+    if(V.note) host.appendChild(el("p","catnote",V.note));
+    return {};
+  }
+
+  /* ---------- ideas view ---------- */
+  function ideasView(host,V,reg){
+    host.classList.add("plain");
+    const wrap=el("div","ideas"); host.appendChild(wrap);
+    V.cards.forEach((o,i)=>{
+      const d=el("article","idea"); d.style.setProperty("--c",tok(o.color));
+      d.appendChild(el("span","no",String(i+1))); d.appendChild(el("span","em",o.icon||"")); d.appendChild(el("h2",null,o.title)); d.appendChild(el("p",null,o.text));
+      if(o.go){ const b=el("button","btn",o.button||"Show me →"); b.type="button"; b.addEventListener("click",()=>{ const t=reg[o.go.view]; setTab(o.go.view); if(t&&t.api){ if(o.go.node&&t.api.selectNode) t.api.selectNode(o.go.node); else if(o.go.stage!=null&&t.api.showStage) t.api.showStage(o.go.stage); } }); d.appendChild(b); }
+      wrap.appendChild(d);
+    });
+    return {};
+  }
+
+
+  /* ---------- trace view: write on a practice grid, guide fades each round ---------- */
+  function traceView(host,V){
+    host.innerHTML='<div class="viz tracebox"><canvas class="tc" aria-label="Writing area. Draw with a mouse, a finger or a pen."></canvas></div>'+
+      '<aside class="side"><div class="story" aria-live="polite"><div class="n"></div><div class="h"></div><div class="t"></div></div>'+
+      '<div class="stars" aria-live="polite"></div><div class="items" role="group" aria-label="Pick one to write"></div>'+
+      '<div class="ctrl"><button class="btn done">✓ Done</button><button class="btn ghost undo">↶ Undo</button><button class="btn ghost clr">Clear</button><button class="btn ghost guide">👁 Guide</button><button class="btn ghost say">🔊 Listen</button></div></aside>';
+    const cv=$("canvas",host), ctx=cv.getContext("2d"), side=$(".side",host), items=V.items, rep=V.repeat||3;
+    const counts=items.map(()=>0), alphas=[.34,.15,0];
+    let idx=0, strokes=[], cur=null, force=null;
+    const css=n=>getComputedStyle(root).getPropertyValue(n).trim();
+    const KAI='"Kaiti SC","STKaiti","KaiTi","BiauKai","Songti SC","PingFang SC",serif';
+    const S=600;
+    function alpha(){ return force!==null?force:alphas[Math.min(counts[idx],alphas.length-1)]; }
+    function size(){ const n=Array.from(items[idx].text).length; cv.width=S*n; cv.height=S; }
+    function draw(){
+      const chars=Array.from(items[idx].text), n=chars.length; ctx.clearRect(0,0,cv.width,cv.height);
+      ctx.fillStyle=css("--card2")||"#fff"; ctx.fillRect(0,0,cv.width,cv.height);
+      const line=css("--line"), hl=css("--hl"), ink=css("--ink"), acc=css("--accent");
+      chars.forEach((ch,i)=>{ const x=i*S;
+        ctx.save(); ctx.strokeStyle=line; ctx.lineWidth=4; ctx.strokeRect(x+6,6,S-12,S-12);
+        ctx.setLineDash([14,12]); ctx.lineWidth=2.5; ctx.beginPath();
+        ctx.moveTo(x+S/2,10); ctx.lineTo(x+S/2,S-10); ctx.moveTo(x+10,S/2); ctx.lineTo(x+S-10,S/2);
+        ctx.moveTo(x+10,10); ctx.lineTo(x+S-10,S-10); ctx.moveTo(x+S-10,10); ctx.lineTo(x+10,S-10); ctx.stroke(); ctx.restore();
+        const a=alpha(); if(a>0){ ctx.save(); ctx.globalAlpha=a; ctx.fillStyle=ink; ctx.font=Math.round(S*0.8)+"px "+KAI; ctx.textAlign="center"; ctx.textBaseline="middle"; ctx.fillText(ch,x+S/2,S/2+S*0.04); ctx.restore(); }
+      });
+      ctx.save(); ctx.strokeStyle=acc; ctx.lineWidth=17; ctx.lineCap="round"; ctx.lineJoin="round";
+      strokes.concat(cur?[cur]:[]).forEach(st=>{ ctx.beginPath(); st.forEach((p,i)=>i?ctx.lineTo(p[0],p[1]):ctx.moveTo(p[0],p[1])); if(st.length===1) ctx.lineTo(st[0][0]+.1,st[0][1]); ctx.stroke(); });
+      ctx.restore();
+    }
+    const pt=e=>{ const r=cv.getBoundingClientRect(); return [(e.clientX-r.left)*cv.width/r.width,(e.clientY-r.top)*cv.height/r.height]; };
+    cv.addEventListener("pointerdown",e=>{ cv.setPointerCapture(e.pointerId); cur=[pt(e)]; draw(); });
+    cv.addEventListener("pointermove",e=>{ if(!cur)return; cur.push(pt(e)); draw(); });
+    const end=()=>{ if(cur){ strokes.push(cur); cur=null; draw(); } };
+    cv.addEventListener("pointerup",end); cv.addEventListener("pointercancel",end);
+    const story=(n,h,t)=>{ $(".story .n",side).textContent=n; $(".story .h",side).textContent=h; $(".story .t",side).textContent=t; };
+    function info(msg){
+      const it=items[idx]; $(".stars",side).textContent=Array.from({length:rep},(_,i)=>i<counts[idx]?"⭐":"☆").join(" ");
+      const hint=counts[idx]>=rep?"Finished!":counts[idx]===rep-1?"Last round. The guide is gone. Write from memory.":counts[idx]===0?"Trace the grey shape.":"The guide is lighter now.";
+      story("Write it · "+(idx+1)+" of "+items.length,it.text+(it.pinyin?"  "+it.pinyin:""),msg||[it.meaning,it.note,hint].filter(Boolean).join(" · "));
+      $$(".f",side).forEach((b,i)=>{ b.textContent=items[i].text+(counts[i]>=rep?" ✓":""); b.setAttribute("aria-pressed",String(i===idx)); });
+    }
+    function pick(i){ idx=i; strokes=[]; cur=null; force=null; size(); draw(); info(); }
+    items.forEach((it,i)=>{ const b=el("button","f",it.text); b.type="button"; b.style.fontFamily=KAI; b.style.fontSize="1.15rem"; b.addEventListener("click",()=>pick(i)); $(".items",side).appendChild(b); });
+    $(".done",side).addEventListener("click",()=>{
+      if(!strokes.length){ info("Write first. Then press Done."); return; }
+      if(counts[idx]<rep) counts[idx]++; strokes=[]; force=null; draw();
+      const all=counts.every(c=>c>=rep);
+      info(all?"You wrote every one "+rep+" times. 🎉":counts[idx]>=rep?"Great! "+items[idx].text+" is finished. Pick the next one.":null);
+    });
+    $(".undo",side).addEventListener("click",()=>{ strokes.pop(); draw(); });
+    $(".clr",side).addEventListener("click",()=>{ strokes=[]; draw(); });
+    $(".guide",side).addEventListener("click",()=>{ force=alpha()>0?0:.3; draw(); });
+    const sayb=$(".say",side); if(!canSpeak) sayb.hidden=true;
+    sayb.addEventListener("click",()=>speak(items[idx].speak||items[idx].text,SAYLANG));
+    window.addEventListener("anyhow-restyle",draw);
+    size(); draw(); info();
+    return {};
+  }
+
+  /* ---------- views + tabs ---------- */
+  const reg={}, tabsEl=$("#tabs"), stageEl=$("#stage");
+  D.views.forEach((V,idx)=>{
+    const tab=el("button","tab",(V.icon?V.icon+" ":"")+V.tab); tab.type="button"; tab.setAttribute("role","tab"); tab.id="t-"+V.id; tab.setAttribute("aria-controls","v-"+V.id);
+    tabsEl.appendChild(tab);
+    const sec=el("section","view"); sec.id="v-"+V.id; sec.setAttribute("role","tabpanel"); sec.setAttribute("aria-labelledby",tab.id); stageEl.appendChild(sec);
+    const api=V.type==="diagram"?diagramView(sec,V,reg):V.type==="catalog"?catalogView(sec,V):V.type==="trace"?traceView(sec,V):ideasView(sec,V,reg);
+    reg[V.id]={tab,sec,api};
+    tab.addEventListener("click",()=>setTab(V.id));
+  });
+  function setTab(id){
+    Object.entries(reg).forEach(([k,r])=>{ const on=k===id; r.tab.setAttribute("aria-selected",String(on)); r.tab.tabIndex=on?0:-1; r.sec.hidden=!on; if(r.api&&r.api.onShow){ on?r.api.onShow():r.api.onHide(); } });
+  }
+  tabsEl.addEventListener("keydown",e=>{
+    if(e.key!=="ArrowRight"&&e.key!=="ArrowLeft") return;
+    const ids=Object.keys(reg), cur=ids.findIndex(k=>reg[k].tab.getAttribute("aria-selected")==="true"), n=ids[(cur+(e.key==="ArrowRight"?1:ids.length-1))%ids.length];
+    setTab(n); reg[n].tab.focus();
+  });
+  setTab(D.views[0].id);
+})();
+
+</script>
+</body>
+</html>
