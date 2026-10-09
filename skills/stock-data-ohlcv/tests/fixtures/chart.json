@@ -1,0 +1,20 @@
+{
+  "chart": {
+    "result": [
+      {
+        "timestamp": [1704153600, 1704240000],
+        "indicators": {
+          "quote": [{
+            "open": [100, 101],
+            "high": [105, 106],
+            "low": [99, 100],
+            "close": [104, 105],
+            "volume": [1000000, 1100000]
+          }],
+          "adjclose": [{"adjclose": [104, 105]}]
+        }
+      }
+    ],
+    "error": null
+  }
+}

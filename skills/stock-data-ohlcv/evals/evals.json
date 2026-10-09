@@ -1,0 +1,23 @@
+{
+  "skill_name": "stock-data-ohlcv",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Fetch AAPL daily OHLCV for 2026-01-02 and save it locally so I can query it later.",
+      "expected_output": "Use the stock-data-ohlcv skill, fetch one daily candle, and upsert it into the local DuckDB database.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Download MSFT candles from 2026-01-02 through 2026-01-09 from Yahoo Finance and store the ticker, date, open, high, low, close, and volume.",
+      "expected_output": "Use the stock-data-ohlcv skill, fetch the inclusive date range, and store daily rows in DuckDB under .state/.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Show me the local historical price candles for TSLA between two dates. Do not refresh the network unless I ask.",
+      "expected_output": "Use the stock-data-ohlcv skill's local show command and do not make a network request.",
+      "files": []
+    }
+  ]
+}
