@@ -1,0 +1,17 @@
+{
+  "name": "anyhow-skill-stock-data-ohlcv",
+  "private": true,
+  "type": "module",
+  "scripts": {
+    "build": "tsc",
+    "ohlcv": "node dist/cli.js",
+    "test": "npm run build && node --test tests/*.test.mjs"
+  },
+  "dependencies": {
+    "@duckdb/node-api": "1.5.6-r.1"
+  },
+  "devDependencies": {
+    "@types/node": "^24.0.0",
+    "typescript": "^5.9.0"
+  }
+}
