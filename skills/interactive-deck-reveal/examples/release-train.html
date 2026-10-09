@@ -1,0 +1,499 @@
+<!doctype html>
+<html lang="en" data-palette="indigo">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+<title>The Release Train</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600&family=IBM+Plex+Sans:wght@400;500;600;700&family=Source+Serif+4:opsz,wght@8..60,600;8..60,700&display=swap">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.css">
+<style>
+/* Deck design system. Palettes are tokens. Slides never write hex colors. */
+:root, [data-palette="teal"] {
+  --ground:#FBFCFC; --surface:#FFFFFF; --surface-2:#EFF4F4; --warm:#FBF4E6;
+  --line:#D3DDDE; --line-soft:#E6EDED;
+  --ink:#0F1B1D; --ink-2:#3D4F52; --ink-3:#6A7C7F;
+  --accent:#0E6E77; --accent-soft:#D9ECEE;
+  --dk-bg:#101C1E; --dk-surface:#172628; --dk-line:#294044; --dk-ink:#FFFFFF; --dk-ink-2:#AEC2C5; --dk-accent:#7FD0D8;
+  --br1:#0A4A51; --br2:#0E6E77; --br3:#1D7FB8;
+  --s1:#0E6E77; --s2:#3E8E96; --s3:#1D7FB8; --s4:#6B4FC4; --s5:#C8862A;
+}
+[data-palette="indigo"] {
+  --ground:#FAFAFD; --surface:#FFFFFF; --surface-2:#EEF0FA; --warm:#FBF4E6;
+  --line:#D5D9EE; --line-soft:#E7E9F5;
+  --ink:#14172B; --ink-2:#444A6B; --ink-3:#757B9C;
+  --accent:#3F4FC4; --accent-soft:#E0E4FA;
+  --dk-bg:#12142A; --dk-surface:#1C1F3D; --dk-line:#30345E; --dk-ink:#FFFFFF; --dk-ink-2:#B4B9DD; --dk-accent:#9AA6FF;
+  --br1:#232A7A; --br2:#3F4FC4; --br3:#7B5BD6;
+  --s1:#3F4FC4; --s2:#7B5BD6; --s3:#1D7FB8; --s4:#0E8A74; --s5:#C8862A;
+}
+[data-palette="ember"] {
+  --ground:#FDFBF8; --surface:#FFFFFF; --surface-2:#F7F0E8; --warm:#FBF1DF;
+  --line:#E4D8CA; --line-soft:#F0E8DD;
+  --ink:#231A14; --ink-2:#5A4A3F; --ink-3:#8A7869;
+  --accent:#B4531A; --accent-soft:#F6E2D2;
+  --dk-bg:#25180F; --dk-surface:#332215; --dk-line:#5A3F2C; --dk-ink:#FFFFFF; --dk-ink-2:#D9C4B3; --dk-accent:#F2A56B;
+  --br1:#7A3210; --br2:#B4531A; --br3:#D48A1F;
+  --s1:#B4531A; --s2:#D48A1F; --s3:#8A3A5C; --s4:#3E7C8E; --s5:#5C7A3A;
+}
+[data-palette="forest"] {
+  --ground:#FAFCFA; --surface:#FFFFFF; --surface-2:#EDF4EE; --warm:#FBF4E6;
+  --line:#D1DFD4; --line-soft:#E4EEE6;
+  --ink:#14221A; --ink-2:#3F5547; --ink-3:#6F8577;
+  --accent:#2F7A4B; --accent-soft:#D9EDE0;
+  --dk-bg:#10231A; --dk-surface:#183227; --dk-line:#2B4E3C; --dk-ink:#FFFFFF; --dk-ink-2:#B3CDBD; --dk-accent:#7FD9A6;
+  --br1:#14502F; --br2:#2F7A4B; --br3:#2A8C8C;
+  --s1:#2F7A4B; --s2:#5C9A3A; --s3:#2A8C8C; --s4:#6B4FC4; --s5:#C8862A;
+}
+[data-palette="slate"] {
+  --ground:#FAFBFC; --surface:#FFFFFF; --surface-2:#EEF1F5; --warm:#F6F1E7;
+  --line:#D6DCE4; --line-soft:#E7EBF0;
+  --ink:#0F172A; --ink-2:#475569; --ink-3:#7A8699;
+  --accent:#334155; --accent-soft:#E2E8F0;
+  --dk-bg:#0F172A; --dk-surface:#1B2438; --dk-line:#334155; --dk-ink:#FFFFFF; --dk-ink-2:#B6C0D0; --dk-accent:#93C5FD;
+  --br1:#0F172A; --br2:#27364F; --br3:#3B5B8C;
+  --s1:#334155; --s2:#3B82C4; --s3:#0E8A74; --s4:#7B5BD6; --s5:#C8862A;
+}
+:root {
+  --good:#1F7A4D; --good-bg:#DDF0E6; --warn:#9A6B12; --warn-bg:#F6EBD3; --risk:#A33B2E; --risk-bg:#F6DEDA;
+  --font-display:"Source Serif 4", Georgia, "Times New Roman", serif;
+  --font-body:"IBM Plex Sans", system-ui, -apple-system, "Segoe UI", sans-serif;
+  --font-mono:"IBM Plex Mono", ui-monospace, "SF Mono", Menlo, monospace;
+}
+
+/* ---------- base ---------- */
+html, body { margin:0; background:var(--ground); }
+.reveal-viewport { background:var(--ground); }
+.reveal { font-family:var(--font-body); color:var(--ink); font-size:22px; }
+.reveal .slides section { text-align:left; }
+.reveal.has-dark-background .controls, .reveal.has-dark-background .progress { color:var(--dk-accent); }
+
+.slide-wrap {
+  --w-surface:var(--surface); --w-ink:var(--ink); --w-ink-2:var(--ink-2); --w-ink-3:var(--ink-3); --w-line:var(--line);
+  --w-accent:var(--accent); --w-soft:var(--surface-2);
+  width:1280px; height:720px; box-sizing:border-box; padding:44px 56px 26px; display:flex; flex-direction:column; color:var(--w-ink);
+}
+.slide-wrap.on-dark {
+  --w-surface:var(--dk-surface); --w-ink:var(--dk-ink); --w-ink-2:var(--dk-ink-2); --w-ink-3:var(--dk-ink-2); --w-line:var(--dk-line);
+  --w-accent:var(--dk-accent); --w-soft:rgba(255,255,255,.08);
+}
+.eyebrow { font-family:var(--font-mono); font-size:13px; letter-spacing:.14em; text-transform:uppercase; color:var(--w-accent); font-weight:600; margin-bottom:10px; }
+.reveal h1 { font-family:var(--font-display); font-size:46px; line-height:1.1; font-weight:700; letter-spacing:-.015em; color:var(--w-ink); margin:0 0 16px; text-transform:none; }
+.reveal h2 { font-family:var(--font-display); font-size:28px; line-height:1.2; color:var(--w-ink); margin:0 0 8px; text-transform:none; }
+.reveal h3 { font-family:var(--font-mono); font-size:15px; letter-spacing:.08em; text-transform:uppercase; color:var(--w-accent); margin:0 0 6px; }
+.reveal p { margin:0 0 12px; line-height:1.4; }
+.lead { font-family:var(--font-display); font-size:28px; line-height:1.35; color:var(--w-ink-2); max-width:940px; }
+.muted { color:var(--w-ink-3); }
+.big { font-family:var(--font-display); font-size:30px; line-height:1.3; color:var(--w-ink); }
+code { font-family:var(--font-mono); font-size:.84em; background:var(--w-soft); padding:1px 6px; border-radius:4px; color:inherit; }
+.foot { margin-top:auto; padding-top:8px; font-size:13px; color:var(--w-ink-3); display:flex; justify-content:space-between; gap:24px; }
+.hint { font-family:var(--font-mono); font-size:13px; letter-spacing:.05em; color:var(--w-ink-3); }
+.trig { position:absolute; opacity:0; pointer-events:none; }
+.reveal ul, .reveal ol { margin:0 0 12px; padding-left:1.1em; line-height:1.4; display:block; }
+.reveal li { margin-bottom:6px; }
+
+/* ---------- layout helpers ---------- */
+.grid { display:grid; gap:18px; }
+.g2 { grid-template-columns:1fr 1fr; } .g3 { grid-template-columns:repeat(3,1fr); } .g4 { grid-template-columns:repeat(4,1fr); }
+.split { display:grid; grid-template-columns:1.1fr 1fr; gap:36px; flex:1; align-items:center; }
+.row { display:flex; gap:16px; align-items:center; }
+.center { margin:auto 0; }
+.title-slide h1 { font-size:64px; max-width:980px; margin-top:auto; }
+.title-slide .lead { margin-bottom:auto; }
+
+/* ---------- components ---------- */
+.card { background:var(--w-surface); border:1px solid var(--w-line); border-radius:14px; padding:20px 22px; }
+.card h2 { font-size:22px; }
+.card p { font-size:19px; color:var(--w-ink-2); margin:0; }
+.card.accent { border-color:var(--c, var(--w-accent)); border-width:2px; }
+.card .tag { color:var(--c, var(--w-accent)); }
+.pill { display:inline-block; font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; padding:3px 10px; border-radius:999px; background:var(--accent-soft); color:var(--accent); }
+.pill.warn { background:var(--warn-bg); color:var(--warn); } .pill.good { background:var(--good-bg); color:var(--good); } .pill.risk { background:var(--risk-bg); color:var(--risk); }
+.kpi { background:var(--w-surface); border:1px solid var(--w-line); border-radius:14px; padding:16px 20px; }
+.kpi b { display:block; font-family:var(--font-display); font-size:54px; line-height:1; color:var(--c, var(--w-accent)); }
+.kpi span { display:block; margin-top:8px; font-size:17px; color:var(--w-ink-2); line-height:1.3; }
+.callout { border-left:6px solid var(--w-accent); background:var(--w-soft); border-radius:10px; padding:14px 20px; font-size:21px; line-height:1.35; }
+.callout.warn { border-color:var(--warn); } .callout.risk { border-color:var(--risk); } .callout.good { border-color:var(--good); }
+.quote { font-family:var(--font-display); font-size:42px; line-height:1.25; max-width:960px; }
+.quote small { display:block; margin-top:16px; font-family:var(--font-body); font-size:18px; color:var(--w-ink-3); }
+.btn { font-family:var(--font-body); cursor:pointer; font-size:19px; font-weight:700; padding:9px 18px; border-radius:12px; border:2px solid var(--w-line); background:var(--w-soft); color:var(--w-ink); transition:all .2s; }
+.slide-wrap > .btn { align-self:flex-start; }
+.btn:hover { border-color:var(--w-accent); }
+.btn.act { background:var(--w-accent); border-color:var(--w-accent); color:#fff; }
+.on-dark .btn.act { color:var(--dk-bg); }
+.cap { font-family:var(--font-display); font-size:28px; line-height:1.3; min-height:76px; color:var(--w-ink); }
+table.t { border-collapse:collapse; width:100%; font-size:19px; }
+table.t th { text-align:left; font-family:var(--font-mono); font-size:13px; letter-spacing:.08em; text-transform:uppercase; color:var(--w-ink-3); padding:10px 12px; border-bottom:2px solid var(--w-line); }
+table.t td { padding:10px 12px; border-bottom:1px solid var(--w-line); vertical-align:top; }
+.ex-tag { display:inline-block; font-family:var(--font-mono); font-size:12px; letter-spacing:.08em; text-transform:uppercase; background:var(--warn-bg); color:var(--warn); padding:3px 10px; border-radius:999px; margin-left:12px; vertical-align:middle; }
+.c-s1{--c:var(--s1)} .c-s2{--c:var(--s2)} .c-s3{--c:var(--s3)} .c-s4{--c:var(--s4)} .c-s5{--c:var(--s5)}
+.c-good{--c:var(--good)} .c-warn{--c:var(--warn)} .c-risk{--c:var(--risk)}
+
+/* ---------- step system: [data-at="n"] shows when the slide step >= n ---------- */
+.pop,.fade,.rise,.grow,.draw,.on-step { opacity:0; transition:opacity .45s ease, transform .5s ease, stroke-dashoffset .9s ease; }
+.pop { transform:scale(.7); transform-box:fill-box; transform-origin:center; }
+.rise { transform:translateY(14px); }
+.grow { transform:scaleX(0); transform-box:fill-box; transform-origin:left center; opacity:1; }
+.draw { opacity:1; stroke-dasharray:1; stroke-dashoffset:1; }
+.pop.on,.fade.on,.rise.on,.on-step.on { opacity:1; transform:none; }
+.grow.on { transform:scaleX(1); }
+.draw.on { stroke-dashoffset:0; }
+[data-only] { display:none; } [data-only].on { display:block; }
+.dim { opacity:.3; transition:opacity .4s; }
+
+/* ---------- custom SVG motion (runs while the slide is shown) ---------- */
+.present .pulse { animation:dk-pulse 1.6s ease-in-out infinite; transform-box:fill-box; transform-origin:center; }
+.present .float { animation:dk-float 3.2s ease-in-out infinite; }
+.present .march { stroke-dasharray:8 6; animation:dk-march 1s linear infinite; }
+.present .spin { animation:dk-spin 6s linear infinite; transform-box:fill-box; transform-origin:center; }
+@keyframes dk-pulse { 0%,100%{transform:scale(1);opacity:1} 50%{transform:scale(1.12);opacity:.75} }
+@keyframes dk-float { 0%,100%{transform:translateY(0)} 50%{transform:translateY(-8px)} }
+@keyframes dk-march { to { stroke-dashoffset:-14 } }
+@keyframes dk-spin { to { transform:rotate(360deg) } }
+@media (prefers-reduced-motion:reduce) { .pulse,.float,.march,.spin { animation:none !important } .pop,.fade,.rise,.grow,.draw { transition:none } }
+
+/* ---------- d3 widgets ---------- */
+.wd svg { width:100%; height:auto; display:block; overflow:visible; }
+.wd text { font-family:var(--font-body); fill:var(--w-ink); }
+.wd .node rect { fill:var(--w-surface); stroke-width:2.4; }
+.wd .node .t1 { font-weight:700; } .wd .node .t2 { fill:var(--w-ink-2); }
+.wd .edge { fill:none; stroke:var(--w-ink-3); stroke-width:2.6; }
+.wd .dot { fill:var(--dk-accent); opacity:0; transition:opacity .4s; }
+.wd .dot.on { opacity:1; }
+.wd .axis line, .wd .axis path { stroke:var(--w-line); } .wd .axis text { fill:var(--w-ink-3); font-size:15px; }
+.wd .lbl { font-size:19px; } .wd .val { font-size:19px; font-weight:700; }
+.wd .track { fill:var(--w-soft); }
+.wd .leg text { font-size:18px; }
+
+</style>
+</head>
+<body>
+<div class="reveal"><div class="slides">
+<!--SLIDES-->
+<section data-bg="brand" data-layout="title-slide">
+  <div class="eyebrow">Sample deck · Engineering</div>
+  <h1>Ship every week, not every quarter</h1>
+  <p class="lead">A release train gives every change a seat on a fixed schedule.</p>
+  <aside class="notes">Open with the problem: big releases hide risk. Say that all numbers in this deck are illustrative.</aside>
+</section>
+
+<section data-steps="5">
+  <div class="eyebrow">1 of 5 · The path</div>
+  <h1>One change travels five stages</h1>
+  <div class="wd" data-wd="flow">
+    <script type="application/json">
+    { "cols": 5, "h": 250, "label": "Five stages from idea to learning",
+      "nodes": [
+        { "id": "idea", "col": 0, "row": 0, "title": "Idea", "sub": "Someone asks", "icon": "💡", "color": "s1", "at": 1 },
+        { "id": "build", "col": 1, "row": 0, "title": "Build", "sub": "Small change", "icon": "🔧", "color": "s2", "at": 2 },
+        { "id": "test", "col": 2, "row": 0, "title": "Test", "sub": "Checks run", "icon": "🧪", "color": "s3", "at": 3 },
+        { "id": "ship", "col": 3, "row": 0, "title": "Ship", "sub": "Train leaves", "icon": "🚆", "color": "s4", "at": 4 },
+        { "id": "learn", "col": 4, "row": 0, "title": "Learn", "sub": "Read the data", "icon": "📈", "color": "s5", "at": 5 }
+      ],
+      "edges": [["idea","build"],["build","test"],["test","ship"],["ship","learn"]] }
+    </script>
+  </div>
+  <div class="row" style="margin-top:12px">
+    <button class="btn" data-step-to="1">Idea</button><button class="btn" data-step-to="2">Build</button>
+    <button class="btn" data-step-to="3">Test</button><button class="btn" data-step-to="4">Ship</button><button class="btn" data-step-to="5">Learn</button>
+  </div>
+  <div class="cap" style="margin-top:14px">
+    <p data-only="1">An idea enters the list.</p>
+    <p data-only="2">An engineer builds a small change.</p>
+    <p data-only="3">Automatic checks test the change.</p>
+    <p data-only="4">The change ships on the next train.</p>
+    <p data-only="5">The team reads the data and learns.</p>
+  </div>
+  <aside class="notes">Press → to walk the path. Or click a button.</aside>
+</section>
+
+<section data-steps="3">
+  <div class="eyebrow">2 of 5 · The effect <span class="ex-tag">illustrative</span></div>
+  <h1>Smaller releases wait less</h1>
+  <div class="split">
+    <div class="wd" data-wd="bars">
+      <script type="application/json">
+      { "w": 620, "fmt": "{v} days", "lw": 190, "rh": 80, "label": "Days from merge to users",
+        "data": [ { "label": "Quarterly release", "value": 45, "color": "risk", "at": 1 },
+                  { "label": "Monthly release", "value": 21, "color": "s5", "at": 2 },
+                  { "label": "Weekly train", "value": 7, "color": "good", "at": 3 } ] }
+      </script>
+    </div>
+    <div>
+      <div class="callout fade" data-at="3"><b>Weekly is 6 times faster</b> than quarterly in this example.</div>
+    </div>
+  </div>
+</section>
+
+<section data-bg="dark" data-steps="3">
+  <div class="eyebrow">3 of 5 · The trade <span class="ex-tag">illustrative</span></div>
+  <h1>Fewer failures, found sooner</h1>
+  <div class="split">
+    <div class="wd" data-wd="line">
+      <script type="application/json">
+      { "w": 620, "h": 330, "x": ["Q1","Q2","Q3","Q4"], "max": 40, "label": "Failed releases for each quarter",
+        "series": [ { "name": "Before", "values": [34,36,33,35], "color": "risk", "at": 1 },
+                    { "name": "After", "values": [30,22,14,9], "color": "good", "at": 2 } ] }
+      </script>
+    </div>
+    <div class="grid">
+      <div class="kpi fade c-s1" data-at="3"><b>-74%</b><span>failed releases, Q1 to Q4</span></div>
+    </div>
+  </div>
+</section>
+
+<section data-steps="3">
+  <div class="eyebrow">4 of 5 · The plan</div>
+  <h1>Three months to a weekly train</h1>
+  <div class="wd" data-wd="timeline">
+    <script type="application/json">
+    { "h": 250, "label": "Rollout plan",
+      "items": [ { "title": "Week 1", "sub": "Agree the rules", "color": "s1", "at": 1 },
+                 { "title": "Week 4", "sub": "First train", "color": "s2", "at": 2 },
+                 { "title": "Week 8", "sub": "Add checks", "color": "s3", "at": 3 },
+                 { "title": "Week 12", "sub": "Review results", "color": "s4", "at": 3 } ] }
+    </script>
+  </div>
+  <div class="grid g3" style="margin-top:20px">
+    <div class="card accent c-s1 fade" data-at="1"><h3>Rule</h3><p>The train leaves every Thursday.</p></div>
+    <div class="card accent c-s2 fade" data-at="2"><h3>Rule</h3><p>A late change waits for the next train.</p></div>
+    <div class="card accent c-s3 fade" data-at="3"><h3>Rule</h3><p>A failed check stops the train.</p></div>
+  </div>
+</section>
+
+<section data-bg="warm">
+  <div class="eyebrow">5 of 5 · The ask</div>
+  <h1>Approve a 12-week pilot</h1>
+  <div class="split">
+    <div>
+      <p class="lead">One team. One train each week. A review at week 12.</p>
+      <div class="callout"><b>Decision needed today:</b> name one team for the pilot.</div>
+    </div>
+    <svg viewBox="0 0 400 260" role="img" aria-label="A train moves along a track" style="width:100%">
+      <path class="march" d="M20,200 H380" stroke="var(--ink-3)" stroke-width="4" fill="none"/>
+      <g class="float">
+        <rect x="60" y="110" width="90" height="64" rx="12" fill="var(--s1)"/><rect x="160" y="124" width="80" height="50" rx="10" fill="var(--s2)"/>
+        <rect x="250" y="124" width="80" height="50" rx="10" fill="var(--s3)"/>
+        <circle cx="90" cy="184" r="12" fill="var(--ink)"/><circle cx="200" cy="184" r="12" fill="var(--ink)"/><circle cx="290" cy="184" r="12" fill="var(--ink)"/>
+      </g>
+      <circle class="pulse" cx="340" cy="70" r="16" fill="var(--s5)"/>
+    </svg>
+  </div>
+</section>
+<!--/SLIDES-->
+</div></div>
+
+<!-- Deck settings. Rebuild with: node scripts/build.mjs <this-file.html> <this-file.html> -->
+<script type="application/json" id="deck-meta">
+{
+ "title": "The Release Train",
+ "palette": "indigo",
+ "footer": "The Release Train · illustrative sample deck"
+}
+</script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/reveal.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/reveal.js/5.1.0/plugin/notes/notes.min.js"></script>
+<script src="https://cdnjs.cloudflare.com/ajax/libs/d3/7.9.0/d3.min.js"></script>
+<script>
+/* Deck engine: wraps slides, runs the step system, draws d3 widgets, starts Reveal. */
+(function () {
+  const META = JSON.parse(document.getElementById("deck-meta").textContent);
+  const $$ = (s, r = document) => [...r.querySelectorAll(s)];
+  const BG = {
+    light: ["color", "var(--ground)"], soft: ["color", "var(--surface-2)"], warm: ["color", "var(--warm)"],
+    dark: ["color", "var(--dk-bg)"],
+    brand: ["gradient", "linear-gradient(135deg,var(--br1) 0%,var(--br2) 55%,var(--br3) 100%)"],
+  };
+  const col = c => `var(--${c || "accent"})`;
+  let uid = 0;
+
+  /* ---------- 1. wrap slides ---------- */
+  const secs = $$(".reveal .slides > section");
+  secs.forEach((s, i) => {
+    const bg = s.dataset.bg || "light";
+    const [kind, val] = BG[bg] || BG.light;
+    s.setAttribute(kind === "color" ? "data-background-color" : "data-background-gradient", val);
+    const wrap = document.createElement("div");
+    wrap.className = "slide-wrap" + (bg === "dark" || bg === "brand" ? " on-dark" : "") + (s.dataset.layout ? " " + s.dataset.layout : "");
+    [...s.childNodes].forEach(n => { if (!(n.nodeType === 1 && n.matches("aside.notes"))) wrap.appendChild(n); });
+    if (s.dataset.foot !== "off" && META.footer) {
+      const f = document.createElement("div");
+      f.className = "foot";
+      f.innerHTML = "<span></span><span>" + (i + 1) + "</span>";
+      f.firstChild.textContent = META.footer;
+      wrap.appendChild(f);
+    }
+    s.insertBefore(wrap, s.firstChild);
+    const n = parseInt(s.dataset.steps || "0", 10);
+    for (let k = 1; k <= n; k++) {
+      const t = document.createElement("span");
+      t.className = "fragment trig"; t.dataset.fragmentIndex = k - 1;
+      s.appendChild(t);
+    }
+    $$(".pop,.fade,.rise,.grow,.draw", s).forEach(e => { if (!e.hasAttribute("data-at")) e.dataset.at = "0"; });
+  });
+
+  /* ---------- 2. d3 widgets ---------- */
+  const estW = (txt, size) => [...String(txt)].reduce((a, c) => a + (c.charCodeAt(0) > 255 ? 1 : 0.58), 0) * size;
+  function text(g, x, y, str, size, cls, anchor, maxW) {
+    const t = g.append("text").attr("x", x).attr("y", y).attr("font-size", size).attr("class", cls || null).attr("text-anchor", anchor || "start").text(str);
+    if (maxW && estW(str, size) > maxW) t.attr("textLength", maxW).attr("lengthAdjust", "spacingAndGlyphs");
+    return t;
+  }
+  function svgFor(el, w, h, label) {
+    return d3.select(el).append("svg").attr("viewBox", `0 0 ${w} ${h}`).attr("role", "img").attr("aria-label", label || "Chart");
+  }
+  const at = (sel, v, i) => sel.attr("data-at", v == null ? 0 : v).style("transition-delay", v == null ? (i || 0) * 90 + "ms" : null);
+
+  const W = {};
+
+  W.flow = (el, s) => {
+    const w = s.w || 1168, h = s.h || 340, cols = s.cols, rows = s.rows || 1, gx = s.gx || 60, gy = s.gy || 26;
+    const svg = svgFor(el, w, h, s.label || "Flow diagram");
+    const mid = "ar" + (++uid);
+    svg.append("defs").append("marker").attr("id", mid).attr("viewBox", "0 0 10 10").attr("refX", 8).attr("refY", 5).attr("markerWidth", 4.5).attr("markerHeight", 4.5).attr("orient", "auto")
+      .append("path").attr("d", "M0,0 L10,5 L0,10 z").attr("fill", "currentColor").style("color", "var(--w-ink-3)");
+    const cw = (w - gx * (cols - 1)) / cols, rh = (h - gy * (rows - 1)) / rows, nh = Math.min(s.nh || 120, rh);
+    const box = n => {
+      const cs = n.cs || 1, rs = n.rs || 1;
+      const ww = cw * cs + gx * (cs - 1), hh = rs > 1 ? rh * rs + gy * (rs - 1) : nh;
+      return { x: n.col * (cw + gx), y: n.row * (rh + gy) + (rh - nh) / 2, w: ww, h: hh };
+    };
+    const byId = {}; s.nodes.forEach(n => { n.b = box(n); byId[n.id] = n; });
+    s.edges.forEach(([a, b, o], i) => {
+      o = o || {}; const A = byId[a], B = byId[b];
+      let x1, y1, x2, y2, d;
+      if (B.b.x > A.b.x + A.b.w - 1) { x1 = A.b.x + A.b.w; y1 = A.b.y + A.b.h / 2; x2 = B.b.x - 4; y2 = B.b.y + B.b.h / 2; d = d3.linkHorizontal()({ source: [x1, y1], target: [x2, y2] }); }
+      else if (B.b.y > A.b.y) { x1 = A.b.x + A.b.w / 2; y1 = A.b.y + A.b.h; x2 = x1; y2 = B.b.y - 4; d = `M${x1},${y1}L${x2},${y2}`; }
+      else { x1 = A.b.x + A.b.w / 2; y1 = A.b.y; x2 = x1; y2 = B.b.y + B.b.h + 4; d = `M${x1},${y1}L${x2},${y2}`; }
+      const g = svg.append("g").attr("class", "fade");
+      at(g, o.at != null ? o.at : B.at, i);
+      const p = g.append("path").attr("class", "edge draw").attr("d", d).attr("pathLength", 1).attr("marker-end", `url(#${mid})`);
+      at(p, o.at != null ? o.at : B.at, i);
+      const dot = g.append("circle").attr("class", "dot").attr("r", 6);
+      dot.append("animateMotion").attr("dur", "2.4s").attr("repeatCount", "indefinite").attr("path", d);
+      at(dot, o.at != null ? o.at : B.at);
+      if (o.label) text(g, (x1 + x2) / 2, Math.min(y1, y2) - 10, o.label, 15, "", "middle").attr("fill", "var(--w-ink-3)");
+    });
+    s.nodes.forEach((n, i) => {
+      const g = svg.append("g").attr("transform", `translate(${n.b.x},${n.b.y})`).append("g").attr("class", "node pop");
+      at(g, n.at, i);
+      g.append("rect").attr("width", n.b.w).attr("height", n.b.h).attr("rx", 16).attr("stroke", col(n.color));
+      const cx = n.b.w / 2, mw = n.b.w - 24;
+      const lines = n.lines || (n.sub ? [n.sub] : []);
+      const top = n.b.h / 2 - (lines.length * 11) - (n.icon ? 4 : 0);
+      if (n.icon) text(g, cx, top - 2, n.icon, 30, "", "middle");
+      text(g, cx, top + (n.icon ? 34 : 8), n.title, 22, "t1", "middle", mw);
+      lines.forEach((l, k) => text(g, cx, top + (n.icon ? 34 : 8) + 24 + k * 20, l, 16, "t2", "middle", mw));
+    });
+  };
+
+  W.bars = (el, s) => {
+    const w = s.w || 1168, n = s.data.length, rh = s.rh || 56, h = n * rh + 8, lw = s.lw || 230, vw = 130;
+    const svg = svgFor(el, w, h, s.label || "Bar chart");
+    const max = s.max || d3.max(s.data, d => d.value), x = d3.scaleLinear([0, max], [0, w - lw - vw]);
+    const fmt = v => (s.fmt || "{v}").replace("{v}", v);
+    s.data.forEach((d, i) => {
+      const y = i * rh + 4, g = svg.append("g");
+      text(g, 0, y + rh / 2 + 6, d.label, 19, "lbl", "start", lw - 14);
+      g.append("rect").attr("class", "track").attr("x", lw).attr("y", y + 8).attr("width", w - lw - vw).attr("height", rh - 20).attr("rx", 9);
+      at(g.append("rect").attr("class", "grow").attr("x", lw).attr("y", y + 8).attr("width", x(d.value)).attr("height", rh - 20).attr("rx", 9).attr("fill", col(d.color || "s1")), d.at, i);
+      at(text(g, lw + x(d.value) + 12, y + rh / 2 + 6, fmt(d.value), 19, "val fade", "start"), d.at, i);
+    });
+  };
+
+  W.donut = (el, s) => {
+    const w = s.w || 1168, h = s.h || 340, r = Math.min(h, 340) / 2 - 6;
+    const svg = svgFor(el, w, h, s.label || "Donut chart");
+    const g = svg.append("g").attr("transform", `translate(${r + 10},${h / 2})`);
+    const arc = d3.arc().innerRadius(r * 0.62).outerRadius(r).padAngle(0.012).cornerRadius(5);
+    d3.pie().sort(null).value(d => d.value)(s.data).forEach((a, i) => {
+      at(g.append("path").attr("class", "pop").attr("d", arc(a)).attr("fill", col(a.data.color || "s" + (i % 5 + 1))), a.data.at, i);
+    });
+    if (s.center) { text(g, 0, 6, s.center, 44, "", "middle").style("font-family", "var(--font-display)").style("font-weight", 700); if (s.sub) text(g, 0, 34, s.sub, 16, "", "middle").attr("fill", "var(--w-ink-3)"); }
+    const lg = svg.append("g").attr("class", "leg").attr("transform", `translate(${r * 2 + 70},${h / 2 - s.data.length * 22})`);
+    s.data.forEach((d, i) => {
+      const y = i * 44, row = lg.append("g");
+      row.append("rect").attr("y", y - 14).attr("width", 20).attr("height", 20).attr("rx", 5).attr("fill", col(d.color || "s" + (i % 5 + 1)));
+      text(row, 34, y + 2, `${d.label}  ${d.value}${s.unit || ""}`, 20, "", "start");
+      at(row.classed("fade", true), d.at, i);
+    });
+  };
+
+  W.line = (el, s) => {
+    const w = s.w || 1168, h = s.h || 340, m = { l: 56, r: 30, t: 16, b: 40 };
+    const svg = svgFor(el, w, h, s.label || "Line chart");
+    const x = d3.scalePoint(s.x, [m.l, w - m.r]).padding(0.3);
+    const ymax = s.max || d3.max(s.series, d => d3.max(d.values)) * 1.1, y = d3.scaleLinear([s.min || 0, ymax], [h - m.b, m.t]);
+    const ax = svg.append("g").attr("class", "axis");
+    y.ticks(4).forEach(t => { ax.append("line").attr("x1", m.l).attr("x2", w - m.r).attr("y1", y(t)).attr("y2", y(t)); text(ax, m.l - 10, y(t) + 5, t, 15, "", "end"); });
+    s.x.forEach(v => text(ax, x(v), h - 12, v, 15, "", "middle"));
+    const ln = d3.line().x((d, i) => x(s.x[i])).y(d => y(d)).curve(d3.curveMonotoneX);
+    s.series.forEach((se, i) => {
+      const c = col(se.color || "s" + (i % 5 + 1)), g = svg.append("g");
+      at(g.append("path").attr("class", "draw").attr("d", ln(se.values)).attr("pathLength", 1).attr("fill", "none").attr("stroke", c).attr("stroke-width", 4).attr("stroke-linecap", "round"), se.at, i);
+      se.values.forEach((v, k) => at(g.append("circle").attr("class", "pop").attr("cx", x(s.x[k])).attr("cy", y(v)).attr("r", 6).attr("fill", c), se.at, i + 3));
+      const last = se.values.length - 1;
+      at(text(g, x(s.x[last]) - 8, y(se.values[last]) - 14, se.name, 17, "fade", "end").attr("fill", c).style("fill", c), se.at, i);
+    });
+  };
+
+  W.timeline = (el, s) => {
+    const w = s.w || 1168, h = s.h || 240, n = s.items.length, y0 = h / 2;
+    const svg = svgFor(el, w, h, s.label || "Timeline");
+    at(svg.append("line").attr("class", "grow").attr("x1", 20).attr("x2", w - 20).attr("y1", y0).attr("y2", y0).attr("stroke", "var(--w-line)").attr("stroke-width", 4).attr("stroke-linecap", "round"), 0);
+    s.items.forEach((d, i) => {
+      const x = 60 + i * ((w - 120) / Math.max(1, n - 1)), up = i % 2 === 0, c = col(d.color || "accent");
+      const g = svg.append("g").attr("class", "pop"); at(g, d.at, i);
+      g.append("circle").attr("cx", x).attr("cy", y0).attr("r", 12).attr("fill", c);
+      text(g, x, y0 + (up ? -62 : 46), d.title, 20, "t1", "middle", 210).style("font-weight", 700);
+      if (d.sub) text(g, x, y0 + (up ? -38 : 70), d.sub, 15, "", "middle", 210).attr("fill", "var(--w-ink-3)").style("fill", "var(--w-ink-3)");
+    });
+  };
+
+  $$(".wd").forEach(el => {
+    const sc = el.querySelector('script[type="application/json"]');
+    try { W[el.dataset.wd](el, JSON.parse(sc.textContent)); }
+    catch (e) { el.textContent = "Widget error: " + e.message; el.style.color = "var(--risk)"; }
+  });
+
+  /* ---------- 3. step system ---------- */
+  const stepOf = s => $$(".trig.visible", s).length;
+  function setStep(s, k) {
+    if (k == null) k = stepOf(s);
+    s.dataset.step = k;
+    $$("[data-at]", s).forEach(e => e.classList.toggle("on", +e.dataset.at <= k));
+    $$("[data-only]", s).forEach(e => e.classList.toggle("on", +e.dataset.only === k));
+    $$("[data-step-to]", s).forEach(b => b.classList.toggle("act", +b.dataset.stepTo === k));
+    s.dispatchEvent(new CustomEvent("step", { detail: k, bubbles: true }));
+  }
+  function reset(s) { if (!s) return; $$("[data-at],[data-only]", s).forEach(e => e.classList.remove("on")); }
+  function enter(s) { if (!s) return; requestAnimationFrame(() => requestAnimationFrame(() => setStep(s))); }
+
+  document.addEventListener("click", e => {
+    const b = e.target.closest("[data-step-to]");
+    if (b) Reveal.navigateFragment(+b.dataset.stepTo - 1);
+  });
+
+  /* ---------- 4. start Reveal ---------- */
+  const plugins = window.RevealNotes ? [RevealNotes] : [];
+  Reveal.initialize({
+    width: 1280, height: 720, margin: 0, controls: true, progress: true, slideNumber: false,
+    hash: true, center: false, transition: "slide", backgroundTransition: "fade",
+    fragments: true, overview: true, plugins,
+  }).then(() => {
+    Reveal.on("fragmentshown", e => { if (e.fragment.classList.contains("trig")) setStep(e.fragment.closest("section")); });
+    Reveal.on("fragmenthidden", e => { if (e.fragment.classList.contains("trig")) setStep(e.fragment.closest("section")); });
+    const dark = sl => Reveal.getRevealElement().classList.toggle("has-dark-background", !!sl && /^(dark|brand)$/.test(sl.dataset.bg || ""));
+    Reveal.on("slidechanged", e => { reset(e.previousSlide); enter(e.currentSlide); dark(e.currentSlide); });
+    dark(Reveal.getCurrentSlide());
+    enter(Reveal.getCurrentSlide());
+    setTimeout(() => setStep(Reveal.getCurrentSlide()), 400);
+  });
+  document.title = META.title;
+})();
+
+</script>
+</body>
+</html>
