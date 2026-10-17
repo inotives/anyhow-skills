@@ -1,0 +1,70 @@
+{
+  "meta": {
+    "title": "A rainy school morning",
+    "target": "雨",
+    "pinyin": "yǔ",
+    "meaning": "rain",
+    "context": "A Primary 1 learner is getting ready for a wet walk to school.",
+    "concept": "Use a familiar weather decision to connect the character with what rain changes in the day."
+  },
+  "illustration": {
+    "label": "Rain clouds above a school path",
+    "viewBox": "0 0 320 180",
+    "elements": [
+      { "type": "circle", "cx": 104, "cy": 46, "r": 22, "fill": "#dbeafe" },
+      { "type": "circle", "cx": 130, "cy": 42, "r": 27, "fill": "#dbeafe" },
+      { "type": "circle", "cx": 156, "cy": 48, "r": 20, "fill": "#dbeafe" },
+      { "type": "line", "x1": 106, "y1": 76, "x2": 98, "y2": 95, "stroke": "#2563eb", "stroke-width": 4 },
+      { "type": "line", "x1": 133, "y1": 77, "x2": 125, "y2": 96, "stroke": "#2563eb", "stroke-width": 4 },
+      { "type": "line", "x1": 160, "y1": 78, "x2": 152, "y2": 97, "stroke": "#2563eb", "stroke-width": 4 },
+      { "type": "rect", "x": 215, "y": 81, "width": 70, "height": 62, "fill": "#fef3c7" },
+      { "type": "rect", "x": 240, "y": 108, "width": 20, "height": 35, "fill": "#d97706" },
+      { "type": "rect", "x": 225, "y": 92, "width": 12, "height": 13, "fill": "#93c5fd" },
+      { "type": "rect", "x": 265, "y": 92, "width": 12, "height": 13, "fill": "#93c5fd" },
+      { "type": "rect", "x": 0, "y": 143, "width": 320, "height": 37, "fill": "#dcfce7" }
+    ]
+  },
+  "sections": [
+    {
+      "type": "scene",
+      "title": "Look outside before school",
+      "text": "Dark clouds gather, and drops tap on the window. In Chinese, rain falling from the sky is 雨 (yǔ)."
+    },
+    {
+      "type": "usage",
+      "title": "Say what the weather is doing",
+      "text": "下雨 (xià yǔ) means “to rain” or “be raining.” Example: 今天下雨。 (Jīntiān xià yǔ.) — It is raining today."
+    },
+    {
+      "type": "popover",
+      "title": "A quick weather choice",
+      "label": "Tap to think",
+      "prompt": "What might you bring when 雨 begins?",
+      "answer": "An umbrella (雨伞, yǔsǎn) helps keep you dry on the walk."
+    },
+    {
+      "type": "reveal",
+      "title": "Quick recall",
+      "prompt": "What does 雨 (yǔ) mean?",
+      "answer": "Rain. 下雨 (xià yǔ) means it is raining."
+    },
+    {
+      "type": "quiz",
+      "title": "Choose for the rainy walk",
+      "question": "It is 下雨 (xià yǔ). Which item helps keep you dry?",
+      "choices": ["雨伞 (yǔsǎn), an umbrella", "太阳镜 (tàiyángjìng), sunglasses"],
+      "answerIndex": 0
+    }
+  ],
+  "practice": {
+    "writing": true,
+    "prompt": "Use your finger or stylus to write 雨. Compare its overall shape with the pale guide."
+  },
+  "sources": [
+    {
+      "title": "汉典: 雨 yǔ、yù",
+      "url": "https://zdic.net/hans/%E9%9B%A8",
+      "note": "Supports the reading yǔ, the meaning rain, and the example 下雨."
+    }
+  ]
+}

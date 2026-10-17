@@ -9,30 +9,28 @@
 </p>
 
 <p align="center">
-  <img alt="Status: Experimental" src="https://img.shields.io/badge/status-experimental-white?style=for-the-badge&labelColor=000000">
-  <img alt="Runtime: TypeScript" src="https://img.shields.io/badge/runtime-typescript-white?style=for-the-badge&labelColor=000000">
-  <img alt="Data: Local first" src="https://img.shields.io/badge/data-local--first-white?style=for-the-badge&labelColor=000000">
+  A collection of seven skills with different runtimes, data needs, and outputs.
 </p>
 
 <p align="center">
-  <a href="docs/phase-1-repository-and-singapore-toto.md">Phase 1 plan</a>
-  ·
   <a href="skills/">Skills</a>
   ·
-  <a href="AGENT.md">Agent instructions</a>
+  <a href="docs/phase-1-repository-and-singapore-toto.md">Repository history</a>
 </p>
 
 ---
 
-## What It Is
+## What This Repository Contains
 
-`anyhow-skills` is a personal collection of niche skills that may be useful in
-specific situations and unnecessary in most others. The skills are designed to
-be understandable and usable across agent tools.
+`anyhow-skills` is a personal collection of focused agent skills. Each skill
+documents its own trigger, workflow, requirements, and limitations in its
+`SKILL.md`. The collection includes local data tools, research workflows, and
+skills that generate shareable HTML.
 
-The collection favors small, local-first utilities. Skills that collect online
-data may store it in SQLite or DuckDB so an agent can query the result locally
-with little setup.
+Runtime and network requirements vary by skill. Some retrieve online data and
+store it locally; others use online sources or CDNs to create learning
+materials, reports, or presentations. Check the linked skill instructions
+before running a workflow.
 
 ## Skill Model
 
@@ -45,35 +43,40 @@ skills/
     ├── package.json      # only when the skill has executable code
     ├── scripts/          # optional
     ├── schema/           # optional SQL schema and migrations
-    ├── fixtures/         # optional small checked-in examples
+    ├── examples/          # optional sample inputs and outputs
     └── .state/           # ignored local SQLite/DuckDB runtime data
 ```
 
-The main `SKILL.md` is the source of truth. Skills use lowercase kebab-case
-names and remain independently copyable. Platform-specific adaptations are
-optional and must not change the portable core instructions.
+The `SKILL.md` is the source of truth for each skill. Skill folders use
+lowercase kebab-case names and are designed to be copied independently. A skill
+may include scripts, examples, schemas, or local runtime state when its workflow
+needs them.
 
-## Current Skills
+## Skills
 
-| Skill | Status | Description |
+| Skill | What it does |
 | --- | --- | --- |
-| [Singapore Toto](skills/singapore-toto/) | Planned | Local SQLite history, refresh/import workflow, and descriptive heuristic estimates. |
-| [Interactive Learning HTML](skills/interactive-learning-html/) | Experimental | One-screen interactive infographics. The content is JSON inside one HTML file, with a shared design system and five color palettes. |
-| [Interactive Deck (Reveal.js)](skills/interactive-deck-reveal/) | Experimental | Presentation decks in one HTML file, with Reveal.js, D3 widgets, animated SVG, and five color palettes. |
-| [HTML Report (D3 + SVG)](skills/html-report-d3/) | Experimental | Sanitized, shareable HTML reports with tabs, tables, D3 charts, and a build-time scan for tables, columns, and credentials. |
-| [Stock OHLCV Data](skills/stock-data-ohlcv/) | Experimental | Fetch daily ticker candles and store local OHLCV history in DuckDB. |
-| [Trinary Agents](skills/trinary-agents/) | Experimental | Coordinate feature implementation through dependency-aware tasks, subagents, and Markdown handoffs in a project-root `trinary-workspace/`. |
+| [Singapore Toto](skills/singapore-toto/SKILL.md) | Import or refresh Singapore Toto results, inspect recent draws, and generate clearly labeled heuristic estimates from local history. |
+| [Interactive Learning HTML](skills/interactive-learning-html/SKILL.md) | Build a one-screen interactive explainer as a single HTML file with inline content, diagrams, and interactions. |
+| [Interactive Deck (Reveal.js)](skills/interactive-deck-reveal/SKILL.md) | Create a browser-based presentation with progressive diagrams and charts, packaged as one HTML file. |
+| [HTML Report (D3 + SVG)](skills/html-report-d3/SKILL.md) | Create a sanitized, shareable HTML report with tabs, tables, charts, and checks for sensitive details. |
+| [Stock OHLCV Data](skills/stock-data-ohlcv/SKILL.md) | Fetch daily ticker prices and store OHLCV history in a local DuckDB database. |
+| [Trinary Agents](skills/trinary-agents/SKILL.md) | Plan and deliver feature work through dependency-aware tasks, project-manager/worker/reviewer handoffs, and a project-root `trinary-workspace/`. |
+| [Chinese Learning](skills/chinese-learning/SKILL.md) | Teach Mandarin through research-backed, context-driven lessons for adults and children. Generates an interactive HTML page with embedded lesson data, inline illustrations, and optional iPad touch writing practice. |
 
 ## Local Data
 
 - Runtime databases belong in `skills/<skill>/.state/` and are ignored by Git.
 - Schemas and migrations belong in `schema/` and are versioned.
-- Small synthetic examples may live in `fixtures/`.
+- Example and fixture inputs may live alongside the skill that uses them.
 - Downloaded data is disposable by default.
-- Agent workflow instructions live in [AGENT.md](AGENT.md).
 - Data-using skills must document sources, retrieval time, refresh commands,
   reset/rebuild behavior, privacy boundaries, and provenance.
 - A failed refresh must not destroy an existing local database.
+
+Feature plans, task briefs, and handoffs created by Trinary Agents are stored
+in a project-root `trinary-workspace/`. That workflow log is local and ignored
+by Git; see [Trinary Agents](skills/trinary-agents/SKILL.md).
 
 ## Development Principles
 
@@ -85,11 +88,11 @@ optional and must not change the portable core instructions.
   lottery odds.
 - Do not claim current data or completed validation without evidence.
 
-## Phase 1
+## Repository History
 
-Phase 1 establishes the repository baseline and migrates the existing Singapore
-Toto TypeScript skill and SQLite bootstrap data without committing the database
-or CSV history.
+The repository began by establishing the skill layout and migrating the
+Singapore Toto tool. The linked document records that initial plan and its
+decisions; it is historical context, not a current project roadmap. Each
+skill's `SKILL.md` and implementation describe its current behavior.
 
-See [the Phase 1 plan](docs/phase-1-repository-and-singapore-toto.md) for the
-accepted decisions, acceptance checks, and AgentRig task breakdown.
+See [the initial repository and Toto plan](docs/phase-1-repository-and-singapore-toto.md).

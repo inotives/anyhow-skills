@@ -1,0 +1,57 @@
+{
+  "meta": {
+    "title": "Take a short break",
+    "target": "休息",
+    "pinyin": "xiūxi",
+    "meaning": "to rest; a break",
+    "context": "An adult learner has been reviewing a report for hours and is planning a short pause before the next meeting.",
+    "concept": "Practice a useful workplace exchange and distinguish resting from continuing to work."
+  },
+  "sections": [
+    {
+      "type": "dialogue",
+      "title": "A natural workplace exchange",
+      "lines": [
+        { "speaker": "同事", "text": "我们休息一下吧。 (Wǒmen xiūxi yíxià ba.) — Let’s take a short break." },
+        { "speaker": "你", "text": "好，我去倒杯水。 (Hǎo, wǒ qù dào bēi shuǐ.) — Sure, I’ll get a glass of water." }
+      ]
+    },
+    {
+      "type": "compare",
+      "title": "Pause or continue?",
+      "items": [
+        { "label": "休息 (xiūxi)", "text": "Rest or take a break from an activity." },
+        { "label": "工作 (gōngzuò)", "text": "Work; continue with a job or task." }
+      ],
+      "text": "The two words describe different parts of a workday, so notice which action the situation calls for."
+    },
+    {
+      "type": "reveal",
+      "title": "Recall in context",
+      "prompt": "Your screen has been open for hours and you want to pause. What can you say?",
+      "answer": "我们休息一下吧。 (Wǒmen xiūxi yíxià ba.) — Let’s take a short break."
+    },
+    {
+      "type": "usage",
+      "title": "A useful pattern",
+      "text": "休息一下 (xiūxi yíxià) means “rest for a bit” or “take a short break.” Add 一下 (yíxià) to make the suggestion sound light and brief."
+    }
+  ],
+  "sources": [
+    {
+      "title": "汉典: 休息",
+      "url": "https://zdic.net/hans/%E4%BC%91%E6%81%AF",
+      "note": "Lists the reading as xiū xī and defines the term as rest or a pause in activity."
+    },
+    {
+      "title": "Cambridge Dictionary: 休息",
+      "url": "https://dictionary.cambridge.org/dictionary/chinese-simplified-english/%E4%BC%91%E6%81%AF",
+      "note": "Cross-checks the modern English meaning and workplace usage."
+    },
+    {
+      "title": "Wiktionary: 休息",
+      "url": "https://en.wiktionary.org/wiki/%E4%BC%91%E6%81%AF",
+      "note": "Identifies xiūxi, with a neutral second syllable, as Standard Chinese in mainland China."
+    }
+  ]
+}

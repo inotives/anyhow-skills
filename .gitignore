@@ -23,6 +23,7 @@ skills/*/*.duckdb.tmp
 
 # AgentRig local workspace and runtime state
 .agent-rig/
+trinary-workspace/
 
 # OS/editor files
 .DS_Store
