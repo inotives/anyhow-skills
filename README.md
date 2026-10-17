@@ -55,7 +55,7 @@ needs them.
 ## Skills
 
 | Skill | What it does |
-| --- | --- | --- |
+| --- | --- |
 | [Singapore Toto](skills/singapore-toto/SKILL.md) | Import or refresh Singapore Toto results, inspect recent draws, and generate clearly labeled heuristic estimates from local history. |
 | [Interactive Learning HTML](skills/interactive-learning-html/SKILL.md) | Build a one-screen interactive explainer as a single HTML file with inline content, diagrams, and interactions. |
 | [Interactive Deck (Reveal.js)](skills/interactive-deck-reveal/SKILL.md) | Create a browser-based presentation with progressive diagrams and charts, packaged as one HTML file. |
