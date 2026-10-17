@@ -62,9 +62,7 @@ optional and must not change the portable core instructions.
 | [Interactive Deck (Reveal.js)](skills/interactive-deck-reveal/) | Experimental | Presentation decks in one HTML file, with Reveal.js, D3 widgets, animated SVG, and five color palettes. |
 | [HTML Report (D3 + SVG)](skills/html-report-d3/) | Experimental | Sanitized, shareable HTML reports with tabs, tables, D3 charts, and a build-time scan for tables, columns, and credentials. |
 | [Stock OHLCV Data](skills/stock-data-ohlcv/) | Experimental | Fetch daily ticker candles and store local OHLCV history in DuckDB. |
-
-The Singapore Toto skill is the first migration planned for this collection.
-It is not available in this checkout until Phase 1 implementation is complete.
+| [Trinary Agents](skills/trinary-agents/) | Experimental | Coordinate feature implementation through dependency-aware tasks, subagents, and Markdown handoffs in a project-root `trinary-workspace/`. |
 
 ## Local Data
 
