@@ -1,0 +1,4 @@
+# Runtime state and build output stay local to this skill folder
+data/
+node_modules/
+dist/

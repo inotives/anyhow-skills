@@ -7,7 +7,7 @@ description: Retrieve daily stock OHLCV data for a requested ticker and date or 
 
 Fetch daily market candles for a ticker and persist them locally. The default
 source is Yahoo Finance's chart endpoint. The database lives at
-`skills/stock-data-ohlcv/.state/stock_data.duckdb` and is ignored by Git.
+`skills/stock-data-ohlcv/data/stock_data.duckdb` and is ignored by Git.
 
 ## Requirements
 
@@ -52,7 +52,7 @@ stored.
 - Set `OHLCV_CHART_FILE` only for deterministic local tests with a saved JSON
   chart response. It bypasses the network and is not a production input.
 - Set `OHLCV_DB_PATH` to use a temporary database in tests or another local
-  location. The normal path remains `.state/stock_data.duckdb`.
+  location. The normal path remains `data/stock_data.duckdb`.
 - Each row records the source label and fetch timestamp.
 - The fetch downloads data before opening the write transaction. A failed HTTP
   request, parse, or validation step leaves existing local rows unchanged.
@@ -66,7 +66,7 @@ stored.
 - `adj_close` may differ from `close` because of corporate actions.
 - This skill stores daily data only. It does not provide intraday candles,
   fundamentals, news, signals, or investment advice.
-- Do not commit `.state/`, downloaded responses, credentials, or source dumps.
+- Do not commit `data/`, downloaded responses, credentials, or source dumps.
 
 ## Validation
 

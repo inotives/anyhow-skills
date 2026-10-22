@@ -5,8 +5,8 @@ import { DatabaseSync } from "node:sqlite";
 import { createInterface } from "node:readline/promises";
 
 const SKILL_ROOT = resolve(import.meta.dirname, "..");
-const DB_PATH = resolve(SKILL_ROOT, ".state/singapore_toto.sqlite3");
-const CSV_PATH = resolve(SKILL_ROOT, ".state/ToTo.csv");
+const DB_PATH = resolve(SKILL_ROOT, "data/singapore_toto.sqlite3");
+const CSV_PATH = resolve(SKILL_ROOT, "data/ToTo.csv");
 const SCHEMA_PATH = resolve(SKILL_ROOT, "schema/001_initial.sql");
 const HISTORY_URL = process.env.TOTO_HISTORY_URL ?? "https://en.lottolyzer.com/history/singapore/toto/page/1/per-page/50/summary-view";
 const ESTIMATION_DRAWS = 624; // approximately six years at two draws per week
@@ -114,7 +114,7 @@ function printHelp(): void {
 
 Commands:
   init       Create the SQLite database and toto_results table.
-  import     Import .state/ToTo.csv into SQLite.
+  import     Import data/ToTo.csv into SQLite.
              Use --path /path/to/file.csv for a different CSV.
   latest     Show the latest local result; refresh if the expected draw is missing.
   check      Alias for latest.

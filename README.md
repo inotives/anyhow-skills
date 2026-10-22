@@ -44,7 +44,7 @@ skills/
     ├── scripts/          # optional
     ├── schema/           # optional SQL schema and migrations
     ├── examples/          # optional sample inputs and outputs
-    └── .state/           # ignored local SQLite/DuckDB runtime data
+    └── data/             # ignored local SQLite/DuckDB runtime data
 ```
 
 The `SKILL.md` is the source of truth for each skill. Skill folders use
@@ -65,7 +65,7 @@ needs them.
 
 ## Local Data
 
-- Runtime databases belong in `skills/<skill>/.state/` and are ignored by Git.
+- Runtime databases belong in `skills/<skill>/data/` and are ignored by Git.
 - Schemas and migrations belong in `schema/` and are versioned.
 - Example and fixture inputs may live alongside the skill that uses them.
 - Downloaded data is disposable by default.

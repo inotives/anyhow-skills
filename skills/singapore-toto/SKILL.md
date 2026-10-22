@@ -20,13 +20,13 @@ npm run build
 The SQLite database is stored at:
 
 ```text
-.state/singapore_toto.sqlite3
+data/singapore_toto.sqlite3
 ```
 
 The default historical CSV is:
 
 ```text
-.state/ToTo.csv
+data/ToTo.csv
 ```
 
 The database and imported history are local runtime state. Do not commit the
@@ -39,7 +39,7 @@ https://en.lottolyzer.com/history/singapore/toto/page/1/per-page/50/summary-view
 ```
 
 This is the source provenance for refreshed draw history. To reset local
-state, remove `.state/singapore_toto.sqlite3` and run `npm run toto -- init`;
+state, remove `data/singapore_toto.sqlite3` and run `npm run toto -- init`;
 then import a CSV or run `refresh` again.
 
 `init` creates the database from `schema/001_initial.sql`. `import` and

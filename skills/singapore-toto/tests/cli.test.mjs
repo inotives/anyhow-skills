@@ -16,7 +16,7 @@ function runtime() {
   mkdirSync(join(dir, "schema"), { recursive: true });
   cpSync(join(root, "dist/cli.js"), join(dir, "dist/cli.js"));
   cpSync(join(root, "schema/001_initial.sql"), join(dir, "schema/001_initial.sql"));
-  return { dir, cli: join(dir, "dist/cli.js"), db: join(dir, ".state/singapore_toto.sqlite3") };
+  return { dir, cli: join(dir, "dist/cli.js"), db: join(dir, "data/singapore_toto.sqlite3") };
 }
 
 function run(cli, args, env = {}) {

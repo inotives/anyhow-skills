@@ -9,7 +9,7 @@ each skill independently understandable and copyable.
 - Check `git status --short` and preserve unrelated user changes.
 - Keep the smallest complete implementation; avoid adding dependencies or
   abstractions without a clear need.
-- Put runtime SQLite or DuckDB files in `skills/<skill>/.state/`. Keep schemas,
+- Put runtime SQLite or DuckDB files in `skills/<skill>/data/`. Keep schemas,
   migrations, and small synthetic fixtures versioned; do not commit downloaded
   databases or source dumps.
 - Document online sources, refresh behavior, provenance, and failure safety for

@@ -5,7 +5,7 @@ import { pathToFileURL } from "node:url";
 import { DuckDBInstance, type DuckDBConnection } from "@duckdb/node-api";
 
 const SKILL_ROOT = resolve(import.meta.dirname, "..");
-const DB_PATH = resolve(process.env.OHLCV_DB_PATH ?? resolve(SKILL_ROOT, ".state/stock_data.duckdb"));
+const DB_PATH = resolve(process.env.OHLCV_DB_PATH ?? resolve(SKILL_ROOT, "data/stock_data.duckdb"));
 const SCHEMA_PATH = resolve(SKILL_ROOT, "schema/001_initial.sql");
 const DEFAULT_CHART_URL = "https://query1.finance.yahoo.com/v8/finance/chart";
 const CHART_URL = (process.env.OHLCV_CHART_URL ?? DEFAULT_CHART_URL).replace(/\/$/, "");
