@@ -20,13 +20,13 @@ npm run build
 The SQLite database is stored at:
 
 ```text
-.state/singapore_toto.sqlite3
+data/singapore_toto.sqlite3
 ```
 
 The default historical CSV is:
 
 ```text
-.state/ToTo.csv
+data/ToTo.csv
 ```
 
 The database and imported history are local runtime state. Do not commit the
@@ -39,7 +39,7 @@ https://en.lottolyzer.com/history/singapore/toto/page/1/per-page/50/summary-view
 ```
 
 This is the source provenance for refreshed draw history. To reset local
-state, remove `.state/singapore_toto.sqlite3` and run `npm run toto -- init`;
+state, remove `data/singapore_toto.sqlite3` and run `npm run toto -- init`;
 then import a CSV or run `refresh` again.
 
 `init` creates the database from `schema/001_initial.sql`. `import` and
@@ -82,8 +82,16 @@ Always refresh the local database before running an estimator:
 npm run toto -- refresh
 ```
 
-`refresh` crawls the Lottolyzer history page, stores the available draws, and
-prints the latest draw and date. Then run the estimator:
+`refresh` crawls the first Lottolyzer history page (the latest 50 draws), stores
+them, and prints the latest draw and date. The estimators use up to 624 draws,
+so on a new database without a CSV import, crawl the full window once:
+
+```sh
+npm run toto -- refresh --full
+```
+
+Use `--pages N` to crawl a specific number of 50-draw pages. Then run the
+estimator:
 
 ```sh
 npm run toto -- predict --estimator_method ensemble
@@ -113,7 +121,7 @@ The estimator window is 624 draws, approximately six years:
 - `hot-cold`: combines frequency and time since appearance.
 - `pairs`: uses historical number co-occurrence.
 - `balanced`: applies range and odd/even constraints.
-- `sum-range`: favors tickets near a typical total-number sum.
+- `sum-range`: favors tickets near the average winning-number sum in the window.
 - `monte-carlo`: samples 10,000 candidate tickets.
 - `ensemble`: combines frequency, recency, overdue, and pair scores.
 
@@ -146,5 +154,6 @@ npm run toto -- import
 npm run toto -- latest
 npm run toto -- check
 npm run toto -- refresh
+npm run toto -- refresh --full
 npm run toto -- predict --estimator_method ensemble
 ```

@@ -5,11 +5,15 @@ import { DatabaseSync } from "node:sqlite";
 import { createInterface } from "node:readline/promises";
 
 const SKILL_ROOT = resolve(import.meta.dirname, "..");
-const DB_PATH = resolve(SKILL_ROOT, ".state/singapore_toto.sqlite3");
-const CSV_PATH = resolve(SKILL_ROOT, ".state/ToTo.csv");
+const DB_PATH = resolve(SKILL_ROOT, "data/singapore_toto.sqlite3");
+const CSV_PATH = resolve(SKILL_ROOT, "data/ToTo.csv");
 const SCHEMA_PATH = resolve(SKILL_ROOT, "schema/001_initial.sql");
 const HISTORY_URL = process.env.TOTO_HISTORY_URL ?? "https://en.lottolyzer.com/history/singapore/toto/page/1/per-page/50/summary-view";
 const ESTIMATION_DRAWS = 624; // approximately six years at two draws per week
+const HISTORY_PAGE_SIZE = 50;
+const FULL_HISTORY_PAGES = Math.ceil(ESTIMATION_DRAWS / HISTORY_PAGE_SIZE);
+const MAX_NUMBER = 49; // Singapore Toto draws 6 numbers from 1-49
+const NUMBERS = Array.from({ length: MAX_NUMBER }, (_, i) => i + 1);
 
 type Draw = { draw: number; draw_date: string; numbers: number[]; additional_number: number | null };
 type SqlRow = Record<string, string | number | null>;
@@ -76,10 +80,16 @@ function htmlDraws(html: string): Draw[] {
   return draws;
 }
 
-async function fetchLatest(database: DatabaseSync): Promise<number> {
-  const response = await fetch(HISTORY_URL, { headers: { "user-agent": "singapore-toto-cli/1.0" } });
-  if (!response.ok) throw new Error(`history site returned HTTP ${response.status}`);
-  const draws = htmlDraws(await response.text());
+async function fetchLatest(database: DatabaseSync, pages = 1): Promise<number> {
+  const draws: Draw[] = []; const paged = /\/page\/\d+\//.test(HISTORY_URL);
+  for (let page = 1; page <= (paged ? pages : 1); page++) {
+    const url = HISTORY_URL.replace(/\/page\/\d+\//, `/page/${page}/`);
+    const response = await fetch(url, { headers: { "user-agent": "singapore-toto-cli/1.0" } });
+    if (!response.ok) throw new Error(`history site returned HTTP ${response.status} for page ${page}`);
+    const pageDraws = htmlDraws(await response.text());
+    if (!pageDraws.length) break;
+    draws.push(...pageDraws);
+  }
   if (!draws.length) throw new Error("history site returned no parseable Toto draws");
   return upsert(database, draws);
 }
@@ -114,11 +124,13 @@ function printHelp(): void {
 
 Commands:
   init       Create the SQLite database and toto_results table.
-  import     Import .state/ToTo.csv into SQLite.
+  import     Import data/ToTo.csv into SQLite.
              Use --path /path/to/file.csv for a different CSV.
   latest     Show the latest local result; refresh if the expected draw is missing.
   check      Alias for latest.
-  refresh    Crawl Lottolyzer and upsert the available draw history.
+  refresh    Crawl Lottolyzer and upsert the latest ${HISTORY_PAGE_SIZE} draws.
+             Use --pages N for N pages of ${HISTORY_PAGE_SIZE} draws, or --full for
+             the ${FULL_HISTORY_PAGES} pages that cover the estimation window.
   predict    Estimate six numbers using one or more statistical methods.
   help       Show this help.
 
@@ -158,7 +170,7 @@ function frequencies(draws: number[][]): number[] {
 }
 
 function choose(scores: number[], constraints = false): number[] {
-  const candidates = Array.from({ length: 50 }, (_, i) => i + 1).sort((a, b) => scores[b] - scores[a] || a - b);
+  const candidates = [...NUMBERS].sort((a, b) => scores[b] - scores[a] || a - b);
   if (!constraints) return candidates.slice(0, 6).sort((a, b) => a - b);
   const pick: number[] = [];
   for (const n of candidates) {
@@ -179,26 +191,26 @@ function pairScores(draws: number[][]): number[] {
 
 function estimate(draws: number[][], method: Method): number[] {
   const counts = frequencies(draws); const scores = Array(51).fill(0) as number[]; const pairs = method === "pairs" || method === "ensemble" ? pairScores(draws) : [];
-  if (method === "frequency") for (let n = 1; n <= 50; n++) scores[n] = counts[n];
+  if (method === "frequency") for (let n = 1; n <= MAX_NUMBER; n++) scores[n] = counts[n];
   if (method === "recency") for (let i = 0; i < draws.length; i++) for (const n of draws[i]) scores[n] += Math.pow(0.97, i);
-  if (method === "bayesian") for (let n = 1; n <= 50; n++) scores[n] = (counts[n] + 1) / (draws.length + 2);
-  if (method === "overdue") for (let n = 1; n <= 50; n++) scores[n] = draws.findIndex((draw) => draw.includes(n)) + 1 || draws.length + 1;
-  if (method === "hot-cold") for (let n = 1; n <= 50; n++) scores[n] = counts[n] > 0 ? counts[n] * (1 + (draws.length - (draws.findIndex((draw) => draw.includes(n)) + 1)) / draws.length) : 0;
-  if (method === "pairs") for (let n = 1; n <= 50; n++) scores[n] = pairs[n];
-  if (["balanced", "sum-range"].includes(method)) for (let n = 1; n <= 50; n++) scores[n] = counts[n];
+  if (method === "bayesian") for (let n = 1; n <= MAX_NUMBER; n++) scores[n] = (counts[n] + 1) / (draws.length + 2);
+  if (method === "overdue") for (let n = 1; n <= MAX_NUMBER; n++) scores[n] = draws.findIndex((draw) => draw.includes(n)) + 1 || draws.length + 1;
+  if (method === "hot-cold") for (let n = 1; n <= MAX_NUMBER; n++) scores[n] = counts[n] > 0 ? counts[n] * (1 + (draws.length - (draws.findIndex((draw) => draw.includes(n)) + 1)) / draws.length) : 0;
+  if (method === "pairs") for (let n = 1; n <= MAX_NUMBER; n++) scores[n] = pairs[n];
+  if (["balanced", "sum-range"].includes(method)) for (let n = 1; n <= MAX_NUMBER; n++) scores[n] = counts[n];
   if (method === "ensemble") {
     const recency = Array(51).fill(0) as number[]; const overdue = Array(51).fill(draws.length + 1) as number[];
     for (let i = 0; i < draws.length; i++) for (const n of draws[i]) { recency[n] += Math.pow(0.97, i); overdue[n] = Math.min(overdue[n], i + 1); }
-    for (let n = 1; n <= 50; n++) scores[n] = counts[n] / Math.max(...counts) * 0.35 + recency[n] / Math.max(...recency) * 0.25 + overdue[n] / Math.max(...overdue) * 0.15 + pairs[n] / Math.max(...pairs) * 0.25;
+    for (let n = 1; n <= MAX_NUMBER; n++) scores[n] = counts[n] / Math.max(...counts) * 0.35 + recency[n] / Math.max(...recency) * 0.25 + overdue[n] / Math.max(...overdue) * 0.15 + pairs[n] / Math.max(...pairs) * 0.25;
   }
   if (method === "monte-carlo") {
     let best: number[] = []; let bestScore = -1;
-    for (let trial = 0; trial < 10000; trial++) { const ticket = Array.from({ length: 50 }, (_, i) => i + 1).sort(() => Math.random() - 0.5).slice(0, 6); const score = ticket.reduce((sum, n) => sum + counts[n], 0); if (score > bestScore) { bestScore = score; best = ticket; } }
+    for (let trial = 0; trial < 10000; trial++) { const ticket = [...NUMBERS].sort(() => Math.random() - 0.5).slice(0, 6); const score = ticket.reduce((sum, n) => sum + counts[n], 0); if (score > bestScore) { bestScore = score; best = ticket; } }
     return best.sort((a, b) => a - b);
   }
   if (method === "balanced") return choose(scores, true);
   if (method === "sum-range") {
-    const target = 150; const candidates = Array.from({ length: 50 }, (_, i) => i + 1).sort((a, b) => scores[b] - scores[a] || a - b); const pick: number[] = [];
+    const target = Math.round(draws.reduce((sum, draw) => sum + draw.reduce((s, n) => s + n, 0), 0) / draws.length); const candidates = [...NUMBERS].sort((a, b) => scores[b] - scores[a] || a - b); const pick: number[] = [];
     while (pick.length < 6) pick.push(candidates.find((n) => !pick.includes(n) && Math.abs(pick.reduce((s, x) => s + x, 0) + n - target) < Math.abs(pick.reduce((s, x) => s + x, 0) - target)) ?? candidates.find((n) => !pick.includes(n))!);
     return pick.sort((a, b) => a - b);
   }
@@ -226,7 +238,9 @@ async function main(): Promise<void> {
   if (command === "init") { console.log(`Database ready: ${DB_PATH}`); return; }
   if (command === "import") { const path = option("--path", CSV_PATH); console.log(`Imported ${await importCsv(database, path)} rows from ${path}`); return; }
   if (command === "refresh") {
-    console.log(`Crawled and stored ${await fetchLatest(database)} draws from Lottolyzer.`);
+    const pages = process.argv.includes("--full") ? FULL_HISTORY_PAGES : Number(option("--pages", "1"));
+    if (!Number.isInteger(pages) || pages < 1) throw new Error("--pages must be a positive whole number");
+    console.log(`Crawled and stored ${await fetchLatest(database, pages)} draws from Lottolyzer.`);
     console.log("Latest result:");
     printDraw(localLatest(database));
     return;

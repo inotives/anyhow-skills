@@ -10,7 +10,7 @@
     {
       "id": 2,
       "prompt": "Download MSFT candles from 2026-01-02 through 2026-01-09 from Yahoo Finance and store the ticker, date, open, high, low, close, and volume.",
-      "expected_output": "Use the stock-data-ohlcv skill, fetch the inclusive date range, and store daily rows in DuckDB under .state/.",
+      "expected_output": "Use the stock-data-ohlcv skill, fetch the inclusive date range, and store daily rows in DuckDB under data/.",
       "files": []
     },
     {

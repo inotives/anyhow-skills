@@ -13,7 +13,7 @@ generated_output/
 *.log
 
 # Skill-local runtime data
-skills/*/.state/
+skills/*/data/
 skills/*/*.sqlite
 skills/*/*.sqlite-wal
 skills/*/*.sqlite-shm
