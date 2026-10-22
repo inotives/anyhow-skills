@@ -61,7 +61,6 @@ needs them.
 | [Interactive Deck (Reveal.js)](skills/interactive-deck-reveal/SKILL.md) | Create a browser-based presentation with progressive diagrams and charts, packaged as one HTML file. |
 | [HTML Report (D3 + SVG)](skills/html-report-d3/SKILL.md) | Create a sanitized, shareable HTML report with tabs, tables, charts, and checks for sensitive details. |
 | [Stock OHLCV Data](skills/stock-data-ohlcv/SKILL.md) | Fetch daily ticker prices and store OHLCV history in a local DuckDB database. |
-| [Trinary Agents](skills/trinary-agents/SKILL.md) | Plan and deliver feature work through dependency-aware tasks, project-manager/worker/reviewer handoffs, and a project-root `trinary-workspace/`. |
 | [Chinese Learning](skills/chinese-learning/SKILL.md) | Teach Mandarin through research-backed, context-driven lessons for adults and children. Generates an interactive HTML page with embedded lesson data, inline illustrations, and optional iPad touch writing practice. |
 
 ## Local Data
@@ -73,10 +72,6 @@ needs them.
 - Data-using skills must document sources, retrieval time, refresh commands,
   reset/rebuild behavior, privacy boundaries, and provenance.
 - A failed refresh must not destroy an existing local database.
-
-Feature plans, task briefs, and handoffs created by Trinary Agents are stored
-in a project-root `trinary-workspace/`. That workflow log is local and ignored
-by Git; see [Trinary Agents](skills/trinary-agents/SKILL.md).
 
 ## Development Principles
 
