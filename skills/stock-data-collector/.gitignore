@@ -1,0 +1,3 @@
+# Runtime state stays local to this skill folder
+data/
+__pycache__/

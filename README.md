@@ -60,7 +60,7 @@ needs them.
 | [Interactive Learning HTML](skills/interactive-learning-html/SKILL.md) | Build a one-screen interactive explainer as a single HTML file with inline content, diagrams, and interactions. |
 | [Interactive Deck (Reveal.js)](skills/interactive-deck-reveal/SKILL.md) | Create a browser-based presentation with progressive diagrams and charts, packaged as one HTML file. |
 | [HTML Report (D3 + SVG)](skills/html-report-d3/SKILL.md) | Create a sanitized, shareable HTML report with tabs, tables, charts, and checks for sensitive details. |
-| [Stock OHLCV Data](skills/stock-data-ohlcv/SKILL.md) | Fetch daily ticker prices and store OHLCV history in a local DuckDB database. |
+| [Stock Data Collector](skills/stock-data-collector/SKILL.md) | Fetch daily ticker prices and record market sentiment analyses in a local SQLite database, joinable by ticker and date. |
 | [Chinese Learning](skills/chinese-learning/SKILL.md) | Teach Mandarin through research-backed, context-driven lessons for adults and children. Generates an interactive HTML page with embedded lesson data, inline illustrations, and optional iPad touch writing practice. |
 
 ## Local Data
