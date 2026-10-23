@@ -1,10 +1,12 @@
-# Dependencies and TypeScript/Node build output
+# Dependencies and build output
 node_modules/
 dist/
 build/
 coverage/
 *.tsbuildinfo
 generated_output/
+__pycache__/
+*.pyc
 
 # Local configuration and logs
 .env
