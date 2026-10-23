@@ -62,6 +62,7 @@ needs them.
 | [HTML Report (D3 + SVG)](skills/html-report-d3/SKILL.md) | Create a sanitized, shareable HTML report with tabs, tables, charts, and checks for sensitive details. |
 | [Stock Data Collector](skills/stock-data-collector/SKILL.md) | Fetch daily ticker prices and record market sentiment analyses in a local SQLite database, joinable by ticker and date. |
 | [Chinese Learning](skills/chinese-learning/SKILL.md) | Teach Mandarin through research-backed, context-driven lessons for adults and children. Generates an interactive HTML page with embedded lesson data, inline illustrations, and optional iPad touch writing practice. |
+| [Learn Chinese Word](skills/learn-chinese-word/SKILL.md) | Turn one Chinese word into a one-screen, kid-friendly HTML app with 3D tiles (Three.js), phrases, stroke-order writing practice, mini games, and a quiz. |
 
 ## Local Data
 
