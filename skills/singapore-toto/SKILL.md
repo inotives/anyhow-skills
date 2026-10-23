@@ -5,16 +5,17 @@ description: Use this skill when the user asks to check Singapore Toto results, 
 
 # Singapore Toto Skill
 
-Use the TypeScript CLI in this repository to maintain local Singapore Toto
+Use the Python CLI in this skill folder to maintain local Singapore Toto
 results and generate heuristic number estimates.
 
 ## Setup
 
-Run once after cloning or changing dependencies:
+The CLI needs only Python 3.9 or newer and its standard library, which macOS
+and most Linux distributions already ship as `python3`. There is nothing to
+install or build. Run commands from this skill folder:
 
 ```sh
-npm install
-npm run build
+python3 scripts/toto.py help
 ```
 
 The SQLite database is stored at:
@@ -39,7 +40,7 @@ https://en.lottolyzer.com/history/singapore/toto/page/1/per-page/50/summary-view
 ```
 
 This is the source provenance for refreshed draw history. To reset local
-state, remove `data/singapore_toto.sqlite3` and run `npm run toto -- init`;
+state, remove `data/singapore_toto.sqlite3` and run `python3 scripts/toto.py init`;
 then import a CSV or run `refresh` again.
 
 `init` creates the database from `schema/001_initial.sql`. `import` and
@@ -56,13 +57,13 @@ import the CSV or run `refresh`; answer `n` to cancel safely.
 Import the default CSV with:
 
 ```sh
-npm run import
+python3 scripts/toto.py import
 ```
 
 For a CSV saved elsewhere, provide its path:
 
 ```sh
-npm run toto -- import --path /path/to/ToTo.csv
+python3 scripts/toto.py import --path /path/to/ToTo.csv
 ```
 
 Historical Toto data can be downloaded from:
@@ -79,7 +80,7 @@ draws safely.
 Always refresh the local database before running an estimator:
 
 ```sh
-npm run toto -- refresh
+python3 scripts/toto.py refresh
 ```
 
 `refresh` crawls the first Lottolyzer history page (the latest 50 draws), stores
@@ -87,20 +88,20 @@ them, and prints the latest draw and date. The estimators use up to 624 draws,
 so on a new database without a CSV import, crawl the full window once:
 
 ```sh
-npm run toto -- refresh --full
+python3 scripts/toto.py refresh --full
 ```
 
 Use `--pages N` to crawl a specific number of 50-draw pages. Then run the
 estimator:
 
 ```sh
-npm run toto -- predict --estimator_method ensemble
+python3 scripts/toto.py predict --estimator_method ensemble
 ```
 
 The normal result command also checks freshness automatically:
 
 ```sh
-npm run latest
+python3 scripts/toto.py latest
 ```
 
 Results are expected after 7pm Singapore time on Mondays and Thursdays. If
@@ -109,6 +110,15 @@ the expected draw is missing, `latest` attempts the same online refresh.
 If the online site is unavailable, use the most recent local result and retry
 the refresh later. Do not present stale data as the latest draw without saying
 that it came from the local database.
+
+If refresh fails with `CERTIFICATE_VERIFY_FAILED` on a network that inspects
+HTTPS traffic (for example a corporate firewall), point Python at a CA bundle
+that includes that network's root certificate instead of disabling
+verification:
+
+```sh
+SSL_CERT_FILE=/path/to/ca-bundle.pem python3 scripts/toto.py refresh
+```
 
 ## Estimator methods
 
@@ -128,13 +138,13 @@ The estimator window is 624 draws, approximately six years:
 Run one method:
 
 ```sh
-npm run toto -- predict --estimator_method recency
+python3 scripts/toto.py predict --estimator_method recency
 ```
 
 Run several methods:
 
 ```sh
-npm run toto -- predict --estimator_method frequency,recency,ensemble
+python3 scripts/toto.py predict --estimator_method frequency,recency,ensemble
 ```
 
 Predictions are statistical selection heuristics. Singapore Toto draws are
@@ -148,12 +158,13 @@ and cannot improve random-lottery odds.
 ## Useful commands
 
 ```sh
-npm run toto -- help
-npm run toto -- init
-npm run toto -- import
-npm run toto -- latest
-npm run toto -- check
-npm run toto -- refresh
-npm run toto -- refresh --full
-npm run toto -- predict --estimator_method ensemble
+python3 scripts/toto.py help
+python3 scripts/toto.py init
+python3 scripts/toto.py import
+python3 scripts/toto.py latest
+python3 scripts/toto.py check
+python3 scripts/toto.py refresh
+python3 scripts/toto.py refresh --full
+python3 scripts/toto.py predict --estimator_method ensemble
+python3 -m unittest discover -s tests
 ```
