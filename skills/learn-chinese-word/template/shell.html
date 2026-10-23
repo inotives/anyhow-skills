@@ -1,0 +1,203 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover, user-scalable=no">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<title>{{TITLE}}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Fredoka:wght@500;600;700&family=Noto+Sans+SC:wght@500;700&display=swap">
+<script type="importmap">
+{ "imports": {
+  "three": "https://cdn.jsdelivr.net/npm/three@0.160.0/build/three.module.js",
+  "three/addons/": "https://cdn.jsdelivr.net/npm/three@0.160.0/examples/jsm/"
+} }
+</script>
+<script src="https://cdn.jsdelivr.net/npm/hanzi-writer@3.7.2/dist/hanzi-writer.min.js" defer></script>
+<style>
+{{CSS}}
+</style>
+</head>
+<body>
+<canvas id="sky" aria-hidden="true"></canvas>
+
+<div id="app">
+  <header class="top">
+    <button class="word-chip" id="wordChip" aria-label="Listen to the word">
+      <span class="zh" id="chipZh"></span>
+      <span class="py" id="chipPy"></span>
+      <span class="spk">🔊</span>
+    </button>
+    <nav class="tabs" id="tabs" role="tablist" aria-label="Activities"></nav>
+    <div class="hud">
+      <span class="stars" id="stars" aria-live="polite">⭐ <b id="starCount">0</b></span>
+      <button class="iconbtn" id="slowBtn" aria-label="Slow voice" title="Slow voice">🐢</button>
+      <button class="iconbtn" id="muteBtn" aria-label="Sound effects on or off" title="Sound effects">🔔</button>
+      <button class="iconbtn" id="infoBtn" aria-label="Sources" title="Sources">ⓘ</button>
+    </div>
+  </header>
+
+  <main id="stage">
+    <!-- LEARN -->
+    <section class="panel" id="p-learn" role="tabpanel">
+      <div class="hero card">
+        <canvas id="heroCanvas" aria-label="3D word tiles. Tap a tile to flip it."></canvas>
+        <div class="hero-fallback" id="heroFallback"></div>
+        <p class="hint">👆 Tap a tile to flip it and hear it</p>
+        <div class="syllables" id="syllables"></div>
+      </div>
+      <div class="learn-side">
+        <div class="card meaning-card">
+          <div class="big-emoji" id="mEmoji"></div>
+          <div>
+            <h2 class="label">What does it mean? <span class="zh-label">意思</span></h2>
+            <p class="meaning" id="mText"></p>
+            <p class="explain" id="mExplain"></p>
+          </div>
+        </div>
+        <div class="card parts-card">
+          <h2 class="label">Character parts <span class="zh-label">部件</span></h2>
+          <div class="parts" id="parts"></div>
+        </div>
+        <div class="learn-row">
+          <div class="card tip-card" id="tipCard">
+            <h2 class="label">💡 Memory trick</h2>
+            <p id="tipText"></p>
+          </div>
+          <div class="card tone-card">
+            <h2 class="label">🎵 Tones <span class="zh-label">声调</span></h2>
+            <div class="tones" id="tones"></div>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- WORDS -->
+    <section class="panel" id="p-words" role="tabpanel">
+      <div class="words-top">
+        <h2 class="label">Words with <span class="zh-inline" data-word></span> <span class="zh-label">词语</span></h2>
+        <div class="pager"><button class="iconbtn" id="phPrev" aria-label="Previous words">◀</button><span id="phPage"></span><button class="iconbtn" id="phNext" aria-label="More words">▶</button></div>
+      </div>
+      <div class="phrase-grid" id="phrases"></div>
+      <div class="card sentence-card">
+        <div class="sent-head">
+          <h2 class="label">Say it in a sentence <span class="zh-label">句子</span></h2>
+          <div class="pager"><button class="iconbtn" id="sePrev" aria-label="Previous sentence">◀</button><span id="sePage"></span><button class="iconbtn" id="seNext" aria-label="Next sentence">▶</button></div>
+        </div>
+        <button class="sentence" id="sentence" aria-label="Listen to the sentence"></button>
+        <p class="sent-py" id="sentPy"></p>
+        <p class="sent-en" id="sentEn"></p>
+      </div>
+    </section>
+
+    <!-- WRITE -->
+    <section class="panel" id="p-write" role="tabpanel">
+      <div class="card write-board">
+        <div class="grid-box" id="gridBox">
+          <svg class="tianzige" viewBox="0 0 100 100" preserveAspectRatio="none" aria-hidden="true">
+            <rect x="1" y="1" width="98" height="98" fill="none" stroke="currentColor" stroke-width="1.4"/>
+            <line x1="0" y1="50" x2="100" y2="50"/><line x1="50" y1="0" x2="50" y2="100"/>
+            <line x1="0" y1="0" x2="100" y2="100"/><line x1="100" y1="0" x2="0" y2="100"/>
+          </svg>
+          <div id="writer"></div>
+          <canvas id="freeCanvas" hidden></canvas>
+        </div>
+      </div>
+      <div class="write-side">
+        <div class="card">
+          <h2 class="label">Pick a character</h2>
+          <div class="char-pick" id="charPick"></div>
+        </div>
+        <div class="card">
+          <h2 class="label">How do you want to practise?</h2>
+          <div class="modes" id="modes">
+            <button class="mode" data-mode="watch">👀<span>Watch</span></button>
+            <button class="mode" data-mode="trace">✏️<span>Trace</span></button>
+            <button class="mode" data-mode="memory">🌟<span>From memory</span></button>
+          </div>
+        </div>
+        <div class="card write-info">
+          <p class="write-msg" id="writeMsg"></p>
+          <p class="write-meta" id="writeMeta"></p>
+          <div class="write-btns">
+            <button class="btn ghost" id="writeAgain">↺ Again</button>
+            <button class="btn" id="writeSay">🔊 Listen</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- PLAY -->
+    <section class="panel" id="p-play" role="tabpanel">
+      <div class="games-bar" id="gamesBar">
+        <button class="game-tab" data-game="bubbles">🫧 Bubble Pop</button>
+        <button class="game-tab" data-game="match">🃏 Memory Match</button>
+        <button class="game-tab" data-game="build">🧩 Build a Sentence</button>
+      </div>
+      <div class="game card" id="g-bubbles">
+        <canvas id="bubbleCanvas" aria-label="Bubble game"></canvas>
+        <div class="game-hud"><span id="bubbleGoal"></span><span id="bubbleScore"></span></div>
+        <p class="toast" id="bubbleToast"></p>
+        <div class="game-over" id="bubbleOver" hidden>
+          <p class="over-title">🎉 Great popping!</p>
+          <button class="btn" id="bubbleAgain">Play again</button>
+        </div>
+      </div>
+      <div class="game card" id="g-match">
+        <div class="game-hud"><span>Find the pairs! Tap two cards.</span><span id="matchScore"></span></div>
+        <div class="match-grid" id="matchGrid"></div>
+        <div class="game-over" id="matchOver" hidden>
+          <p class="over-title">🏆 All pairs found!</p>
+          <button class="btn" id="matchAgain">Play again</button>
+        </div>
+      </div>
+      <div class="game card" id="g-build">
+        <div class="game-hud"><span>Tap the pieces in the right order.</span><span id="buildScore"></span></div>
+        <div class="build-hint"><button class="iconbtn" id="buildSay" aria-label="Listen to the sentence">🔊</button><span id="buildEn"></span></div>
+        <div class="build-slots" id="buildSlots"></div>
+        <div class="build-tiles" id="buildTiles"></div>
+        <div class="build-btns">
+          <button class="btn ghost" id="buildReset">↺ Reset</button>
+          <button class="btn" id="buildNext" hidden>Next ▶</button>
+        </div>
+      </div>
+    </section>
+
+    <!-- QUIZ -->
+    <section class="panel" id="p-quiz" role="tabpanel">
+      <div class="quiz card" id="quizBox">
+        <div class="quiz-dots" id="quizDots"></div>
+        <p class="quiz-prompt" id="quizPrompt"></p>
+        <div class="quiz-show" id="quizShow"></div>
+        <div class="quiz-choices" id="quizChoices"></div>
+        <p class="quiz-explain" id="quizExplain"></p>
+        <button class="btn" id="quizNext" hidden>Next ▶</button>
+      </div>
+      <div class="quiz card quiz-end" id="quizEnd" hidden>
+        <p class="end-stars" id="endStars"></p>
+        <p class="over-title" id="endText"></p>
+        <button class="btn" id="quizAgain">Try again</button>
+      </div>
+    </section>
+  </main>
+</div>
+
+<canvas id="fx" aria-hidden="true"></canvas>
+
+<dialog id="srcDlg" aria-labelledby="srcT">
+  <button class="iconbtn x" id="srcX" aria-label="Close">✕</button>
+  <h2 id="srcT">Sources and notes</h2>
+  <ul id="srcList"></ul>
+  <p class="note">Voice uses your device's Chinese text-to-speech. Stroke data comes from Hanzi Writer. Nothing you do on this page is saved or sent anywhere.</p>
+</dialog>
+
+<!-- Page content. Rebuild with: node skills/learn-chinese-word/scripts/build.mjs <this-file.html> <this-file.html> -->
+<script type="application/json" id="content">
+{{CONTENT}}
+</script>
+<script type="module">
+{{ENGINE}}
+</script>
+</body>
+</html>

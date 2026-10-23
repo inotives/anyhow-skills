@@ -1,0 +1,48 @@
+{
+  "word": "熊猫",
+  "pinyin": "xióngmāo",
+  "meaning": "panda",
+  "emoji": "🐼",
+  "explain": "A panda is a big black-and-white bear from China. It loves to eat bamboo!",
+  "chars": [
+    { "char": "熊", "pinyin": "xióng", "meaning": "bear", "radical": "灬", "radicalMeaning": "fire dots", "strokes": 14 },
+    { "char": "猫", "pinyin": "māo", "meaning": "cat", "radical": "犭", "radicalMeaning": "animal side", "strokes": 11 }
+  ],
+  "mnemonic": "熊 is a bear and 猫 is a cat. A panda looks like a big bear with a cute cat face!",
+  "phrases": [
+    { "zh": "大熊猫", "pinyin": "dà xióngmāo", "en": "giant panda", "emoji": "🎋" },
+    { "zh": "小熊猫", "pinyin": "xiǎo xióngmāo", "en": "red panda", "emoji": "🍁" },
+    { "zh": "熊猫宝宝", "pinyin": "xióngmāo bǎobao", "en": "baby panda", "emoji": "🍼" },
+    { "zh": "熊猫玩具", "pinyin": "xióngmāo wánjù", "en": "panda toy", "emoji": "🧸" },
+    { "zh": "熊猫馆", "pinyin": "xióngmāo guǎn", "en": "panda house at the zoo", "emoji": "🏡" }
+  ],
+  "sentences": [
+    { "zh": "我喜欢熊猫。", "pinyin": "Wǒ xǐhuan xióngmāo.", "en": "I like pandas.", "tiles": ["我", "喜欢", "熊猫"] },
+    { "zh": "熊猫爱吃竹子。", "pinyin": "Xióngmāo ài chī zhúzi.", "en": "Pandas love to eat bamboo.", "tiles": ["熊猫", "爱", "吃", "竹子"] },
+    { "zh": "熊猫是黑白的。", "pinyin": "Xióngmāo shì hēibái de.", "en": "Pandas are black and white.", "tiles": ["熊猫", "是", "黑白", "的"] },
+    { "zh": "动物园里有两只熊猫。", "pinyin": "Dòngwùyuán lǐ yǒu liǎng zhī xióngmāo.", "en": "There are two pandas at the zoo.", "tiles": ["动物园", "里", "有", "两只", "熊猫"] }
+  ],
+  "distractors": [
+    { "zh": "熊", "pinyin": "xióng", "en": "bear", "emoji": "🐻" },
+    { "zh": "猫", "pinyin": "māo", "en": "cat", "emoji": "🐱" },
+    { "zh": "老虎", "pinyin": "lǎohǔ", "en": "tiger", "emoji": "🐯" },
+    { "zh": "猴子", "pinyin": "hóuzi", "en": "monkey", "emoji": "🐵" },
+    { "zh": "兔子", "pinyin": "tùzi", "en": "rabbit", "emoji": "🐰" },
+    { "zh": "大象", "pinyin": "dàxiàng", "en": "elephant", "emoji": "🐘" }
+  ],
+  "quiz": [
+    { "type": "listen", "speak": "熊猫", "choices": ["老虎", "熊猫", "猴子", "大象"], "answer": 1 },
+    { "type": "meaning", "show": "熊猫", "choices": ["cat", "tiger", "panda", "bear"], "answer": 2 },
+    { "type": "pinyin", "show": "熊猫", "choices": ["xiōngmào", "xióngmāo", "xiǒngmáo"], "answer": 1, "explain": "熊 is tone 2 (rising). 猫 is tone 1 (high and flat)." },
+    { "type": "picture", "show": "🐼", "choices": ["兔子", "猴子", "熊猫"], "answer": 2 },
+    { "type": "fill", "show": "___爱吃竹子。", "choices": ["熊猫", "老虎", "兔子"], "answer": 0, "explain": "熊猫爱吃竹子。Pandas love to eat bamboo." },
+    { "type": "char", "prompt": "Which character in 熊猫 means “cat”?", "show": "熊猫", "choices": ["熊", "猫"], "answer": 1, "explain": "猫 māo means cat. 熊 xióng means bear." },
+    { "type": "char", "prompt": "猫 is an animal. Which part on its left means “animal”?", "show": "猫", "choices": ["灬", "艹", "犭"], "answer": 2, "explain": "犭 is the animal side. You also see it in 狗 (dog)." }
+  ],
+  "sources": [
+    { "title": "熊貓 – Wiktionary", "url": "https://en.wiktionary.org/wiki/%E7%86%8A%E8%B2%93", "note": "meaning and pronunciation of 熊猫 (xióngmāo, panda)" },
+    { "title": "熊 – Wiktionary", "url": "https://en.wiktionary.org/wiki/%E7%86%8A", "note": "熊 means bear; radical 火 (灬); 14 strokes" },
+    { "title": "猫 – Wiktionary", "url": "https://en.wiktionary.org/wiki/%E7%8C%AB", "note": "猫 means cat; radical 犬 (犭); 11 strokes" },
+    { "title": "MDBG Chinese Dictionary: 熊猫", "url": "https://www.mdbg.net/chinese/dictionary?wdqb=%E7%86%8A%E7%8C%AB", "note": "pinyin and English for 熊猫 and its phrases" }
+  ]
+}
