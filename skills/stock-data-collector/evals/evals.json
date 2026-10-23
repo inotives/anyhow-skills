@@ -1,0 +1,29 @@
+{
+  "skill_name": "stock-data-collector",
+  "evals": [
+    {
+      "id": 1,
+      "prompt": "Fetch AAPL daily OHLCV for 2026-01-02 and save it locally so I can query it later.",
+      "expected_output": "Use the stock-data-collector skill, fetch one daily candle, and upsert it into the local SQLite database.",
+      "files": []
+    },
+    {
+      "id": 2,
+      "prompt": "Download MSFT candles from 2026-01-02 through 2026-01-09 from Yahoo Finance and store the ticker, date, open, high, low, close, and volume.",
+      "expected_output": "Use the stock-data-collector skill, fetch the inclusive date range, and store daily rows in SQLite under data/.",
+      "files": []
+    },
+    {
+      "id": 3,
+      "prompt": "Show me the local historical price candles for TSLA between two dates. Do not refresh the network unless I ask.",
+      "expected_output": "Use the stock-data-collector skill's local show command and do not make a network request.",
+      "files": []
+    },
+    {
+      "id": 4,
+      "prompt": "What's the current market sentiment on NVDA? Save it so I can compare it with the price history later.",
+      "expected_output": "Use the stock-data-collector skill: research recent NVDA news from established outlets only, write a full analysis, choose a level and a score inside that level's band, and store it with add-sentiment, passing each article URL as --source.",
+      "files": []
+    }
+  ]
+}
